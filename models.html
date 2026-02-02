@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,17 +8,43 @@
   <link rel="stylesheet" href="styles.css">
   <!-- No page-specific styles needed; all styles are now in styles.css -->
 </head>
+
 <body>
+  <!-- Popup Modal for Success Messages -->
+  <div id="popupModal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);align-items:center;justify-content:center;">
+    <div style="background:#fff;padding:2.2rem 2.5rem 1.5rem 2.5rem;border-radius:14px;box-shadow:0 4px 32px rgba(0,0,0,0.18);max-width:90vw;width:350px;text-align:center;position:relative;">
+      <div id="popupMessage" style="font-size:1.18rem;font-weight:600;margin-bottom:1.2rem;color:var(--accent-color);">Success!</div>
+      <div id="popupCountdown" style="font-size:1.05rem;color:#444;margin-bottom:1.2rem;">Continuing in <span id="popupSeconds">5</span>...</div>
+      <button id="popupOkBtn" style="background:var(--accent-color);color:#fff;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;padding:0.6rem 2.2rem;cursor:pointer;">OK</button>
+    </div>
+  </div>
   <header class="site-header">
     <div class="logo">AZOOM</div>
     <nav class="menu" id="hamburger-menu">
       <a href="index.html#home">Home</a>
       <a href="#" id="loginMenuBtn">Login</a>
-      <div id="userMenu" style="display:none;position:relative;">
+      <!-- Login Modal -->
+      <div id="loginModal" class="login-modal" style="display:none;">
+        <div class="login-modal-content">
+          <button id="closeLoginModal" class="close-login-modal close-green"
+            aria-label="Close login modal">&times;</button>
+          <form id="loginForm">
+            <h2 class="login-title">Login</h2>
+            <label for="username" class="login-label">Username</label>
+            <input type="text" id="username" name="username" required placeholder="Enter username" class="login-input">
+            <label for="password" class="login-label">Password</label>
+            <input type="password" id="password" name="password" required placeholder="Enter password"
+              class="login-input">
+            <button type="submit" class="login-btn">Login</button>
+          </form>
+        </div>
+      </div>
+      <div id="userMenu" style="display:inline-block;position:relative;">
         <a href="#" id="userMenuBtn" style="color:var(--accent-color);font-weight:800;">User ▼</a>
-        <div id="userDropdown" style="display:none;position:absolute;top:2.2rem;right:0;background:#222;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.18);min-width:160px;z-index:3000;">
-          <a href="customer-dashboard.html" style="display:block;padding:0.8rem 1.2rem;color:var(--accent-color);text-decoration:none;font-weight:600;">Dashboard</a>
-          <a href="#" id="logoutBtn" style="display:block;padding:0.8rem 1.2rem;color:#f33;text-decoration:none;font-weight:600;">Logout</a>
+        <div id="userDropdown"
+          style="display:none;position:absolute;top:2.2rem;right:0;background:#222;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.18);min-width:160px;z-index:3000;">
+          <a href="#" id="dashboardLink" class="dropdown-link">Dashboard</a>
+          <a href="#" id="logoutBtn" class="dropdown-link">Logout</a>
         </div>
       </div>
     </nav>
@@ -25,18 +52,27 @@
   </header>
   <main class="page">
     <h2 class="models-title">Choose Your Vehicle</h2>
-    <div class="availability-legend" style="display:flex;gap:2.5rem;justify-content:center;align-items:center;margin-bottom:2.2rem;">
+    <div class="availability-legend"
+      style="display:flex;gap:2.5rem;justify-content:center;align-items:center;margin-bottom:2.2rem;">
       <span style="display:flex;align-items:center;gap:0.5rem;">
-        <span style="width:16px;height:16px;border-radius:50%;background:#22C55E;display:inline-block;border:2px solid #888;"></span>
-        <span style="color:var(--accent-color);font-size:1rem;border:1px solid #888;padding:2px 8px;border-radius:6px;background:rgba(34,197,94,0.07);">Available</span>
+        <span
+          style="width:16px;height:16px;border-radius:50%;background:#22C55E;display:inline-block;border:2px solid #888;"></span>
+        <span
+          style="color:var(--accent-color);font-size:1rem;border:1px solid #888;padding:2px 8px;border-radius:6px;background:rgba(34,197,94,0.07);">Available</span>
       </span>
       <span style="display:flex;align-items:center;gap:0.5rem;">
-        <span style="width:16px;height:16px;border-radius:50%;background:#f33;display:inline-block;border:2px solid #888;"></span>
-        <span style="color:#f33;font-size:1rem;border:1px solid #888;padding:2px 8px;border-radius:6px;background:rgba(243,51,51,0.07);">All Rented</span>
+        <span
+          style="width:16px;height:16px;border-radius:50%;background:#f33;display:inline-block;border:2px solid #888;"></span>
+        <span
+          style="color:#f33;font-size:1rem;border:1px solid #888;padding:2px 8px;border-radius:6px;background:rgba(243,51,51,0.07);">All
+          Rented</span>
       </span>
       <span style="display:flex;align-items:center;gap:0.5rem;">
-        <span style="width:16px;height:16px;border-radius:50%;background:#181F2A;display:inline-block;border:2px solid #888;"></span>
-        <span style="color:#bbb;font-size:1rem;border:1px solid #888;padding:2px 8px;border-radius:6px;background:rgba(24,31,42,0.7);">Not Offered</span>
+        <span
+          style="width:16px;height:16px;border-radius:50%;background:#181F2A;display:inline-block;border:2px solid #888;"></span>
+        <span
+          style="color:#bbb;font-size:1rem;border:1px solid #888;padding:2px 8px;border-radius:6px;background:rgba(24,31,42,0.7);">Not
+          Offered</span>
       </span>
     </div>
     <section class="models-grid" id="modelsGrid">
@@ -66,21 +102,127 @@
     </div>
   </footer>
   <script>
-        // User menu dropdown logic (for consistency)
-        const userMenu = document.getElementById('userMenu');
-        const userMenuBtn = document.getElementById('userMenuBtn');
-        const userDropdown = document.getElementById('userDropdown');
-        if (userMenuBtn && userDropdown) {
-          userMenuBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
-          });
-          document.addEventListener('click', (e) => {
-            if (!userMenu.contains(e.target) && e.target !== userMenuBtn) {
-              userDropdown.style.display = 'none';
+    // Popup modal logic
+    function showPopup(message, onOk, countdownSeconds = 5) {
+      const popupModal = document.getElementById('popupModal');
+      const popupMessage = document.getElementById('popupMessage');
+      const popupCountdown = document.getElementById('popupCountdown');
+      const popupSeconds = document.getElementById('popupSeconds');
+      const popupOkBtn = document.getElementById('popupOkBtn');
+      let seconds = countdownSeconds;
+      let closed = false;
+      popupMessage.textContent = message;
+      popupModal.style.display = 'flex';
+      popupSeconds.textContent = seconds;
+      popupCountdown.style.display = countdownSeconds > 0 ? '' : 'none';
+      function closePopup() {
+        if (closed) return;
+        closed = true;
+        popupModal.style.display = 'none';
+        if (onOk) onOk();
+      }
+      popupOkBtn.onclick = closePopup;
+      let timer = null;
+      if (countdownSeconds > 0) {
+        timer = setInterval(() => {
+          seconds--;
+          popupSeconds.textContent = seconds;
+          if (seconds <= 0) {
+            clearInterval(timer);
+            closePopup();
+          }
+        }, 1000);
+      }
+    }
+
+    // Login modal logic
+    const loginMenuBtn = document.getElementById('loginMenuBtn');
+    const loginModal = document.getElementById('loginModal');
+    const closeLoginModalBtn = document.getElementById('closeLoginModal');
+    const loginForm = document.getElementById('loginForm');
+    // Show/hide login modal
+    if (loginMenuBtn && loginModal) {
+      loginMenuBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      });
+    }
+    if (closeLoginModalBtn && loginModal) {
+      closeLoginModalBtn.addEventListener('click', () => {
+        loginModal.style.display = 'none';
+        document.body.style.overflow = '';
+      });
+    }
+    if (loginModal) {
+      loginModal.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+          loginModal.style.display = 'none';
+          document.body.style.overflow = '';
+        }
+      });
+    }
+    // Login logic with localStorage (copied from index.html, using popup for feedback)
+    if (loginForm) {
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const username = loginForm.username.value.trim();
+        const password = loginForm.password.value.trim();
+        if (username && password) {
+          localStorage.setItem('azoom_logged_in', 'true');
+          localStorage.setItem('azoom_user', username);
+          if (username.toLowerCase() === 'employee') {
+            localStorage.setItem('azoom_role', 'employee');
+          } else {
+            localStorage.setItem('azoom_role', 'customer');
+          }
+          // Show popup and proceed after
+          showPopup('Login successful!', function () {
+            loginModal.style.display = 'none';
+            document.body.style.overflow = '';
+            updateAuthUI();
+            if (localStorage.getItem('azoom_role') === 'employee') {
+              window.location.href = 'employee-dashboard.html';
             }
           });
+        } else {
+          showPopup('Invalid user or password', null, 3);
         }
+      });
+    }
+    // User menu dropdown logic (uniform with customer portal)
+    var userMenu = document.getElementById('userMenu');
+    var userMenuBtn = document.getElementById('userMenuBtn');
+    var userDropdown = document.getElementById('userDropdown');
+    if (userMenuBtn && userDropdown) {
+      userMenuBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+      });
+      document.addEventListener('click', (e) => {
+        if (!userMenu.contains(e.target) && e.target !== userMenuBtn) {
+          userDropdown.style.display = 'none';
+        }
+      });
+    }
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('azoom_logged_in');
+      localStorage.removeItem('azoom_user');
+      localStorage.removeItem('azoom_role');
+      window.location.href = 'index.html#home';
+      updateAuthUI();
+    });
+    // Dashboard link logic
+    document.getElementById('dashboardLink').addEventListener('click', function (e) {
+      e.preventDefault();
+      const role = localStorage.getItem('azoom_role');
+      if (role === 'employee') {
+        window.location.href = 'employee-dashboard.html';
+      } else {
+        window.location.href = 'customer-dashboard.html';
+      }
+    });
     // Hamburger menu logic (reuse from index.html)
     const hamburger = document.getElementById("hamburger");
     const menu = document.getElementById("hamburger-menu");
@@ -116,7 +258,7 @@
     // Logout logic
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-      logoutBtn.addEventListener('click', function(e) {
+      logoutBtn.addEventListener('click', function (e) {
         e.preventDefault();
         localStorage.removeItem('azoom_logged_in');
         localStorage.removeItem('azoom_user');
@@ -277,8 +419,17 @@
     });
 
     // Rent button logic: go to rent.html with preselected model and store availability
-    grid.addEventListener('click', function(e) {
+    grid.addEventListener('click', function (e) {
       if (e.target.classList.contains('rent-btn')) {
+        const loggedIn = localStorage.getItem('azoom_logged_in') === 'true';
+        if (!loggedIn) {
+          showPopup('You must be logged in to rent.', function () {
+            // After popup closes, show login modal
+            loginModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+          }, 3);
+          return;
+        }
         const model = encodeURIComponent(e.target.getAttribute('data-model'));
         const category = encodeURIComponent(e.target.getAttribute('data-category'));
         const orchard = e.target.getAttribute('data-orchard');
@@ -289,4 +440,5 @@
     });
   </script>
 </body>
+
 </html>

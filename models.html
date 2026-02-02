@@ -11,11 +11,16 @@
 
 <body>
   <!-- Popup Modal for Success Messages -->
-  <div id="popupModal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);align-items:center;justify-content:center;">
-    <div style="background:#fff;padding:2.2rem 2.5rem 1.5rem 2.5rem;border-radius:14px;box-shadow:0 4px 32px rgba(0,0,0,0.18);max-width:90vw;width:350px;text-align:center;position:relative;">
-      <div id="popupMessage" style="font-size:1.18rem;font-weight:600;margin-bottom:1.2rem;color:var(--accent-color);">Success!</div>
-      <div id="popupCountdown" style="font-size:1.05rem;color:#444;margin-bottom:1.2rem;">Continuing in <span id="popupSeconds">5</span>...</div>
-      <button id="popupOkBtn" style="background:var(--accent-color);color:#fff;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;padding:0.6rem 2.2rem;cursor:pointer;">OK</button>
+  <div id="popupModal"
+    style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);align-items:center;justify-content:center;">
+    <div
+      style="background:#fff;padding:2.2rem 2.5rem 1.5rem 2.5rem;border-radius:14px;box-shadow:0 4px 32px rgba(0,0,0,0.18);max-width:90vw;width:350px;text-align:center;position:relative;">
+      <div id="popupMessage" style="font-size:1.18rem;font-weight:600;margin-bottom:1.2rem;color:var(--accent-color);">
+        Success!</div>
+      <div id="popupCountdown" style="font-size:1.05rem;color:#444;margin-bottom:1.2rem;">Continuing in <span
+          id="popupSeconds">5</span>...</div>
+      <button id="popupOkBtn"
+        style="background:var(--accent-color);color:#fff;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;padding:0.6rem 2.2rem;cursor:pointer;">OK</button>
     </div>
   </div>
   <header class="site-header">
@@ -26,16 +31,37 @@
       <!-- Login Modal -->
       <div id="loginModal" class="login-modal" style="display:none;">
         <div class="login-modal-content">
-          <button id="closeLoginModal" class="close-login-modal close-green"
-            aria-label="Close login modal">&times;</button>
+          <button id="closeLoginModal" class="close-login-modal close-green" aria-label="Close login modal">&times;</button>
           <form id="loginForm">
             <h2 class="login-title">Login</h2>
             <label for="username" class="login-label">Username</label>
             <input type="text" id="username" name="username" required placeholder="Enter username" class="login-input">
             <label for="password" class="login-label">Password</label>
-            <input type="password" id="password" name="password" required placeholder="Enter password"
-              class="login-input">
+            <input type="password" id="password" name="password" required placeholder="Enter password" class="login-input">
             <button type="submit" class="login-btn">Login</button>
+            <div id="loginError" style="color:#f33;font-weight:700;margin-top:0.7rem;display:none;"></div>
+            <div style="margin-top:1.2rem;text-align:center;">
+              <div style="color:#fff;font-size:1.08rem;margin-bottom:0.2rem;">Don't have an account?</div>
+              <a href="#" id="showSignupForm" style="color:#22C55E;font-weight:700;font-size:1.13rem;display:inline-block;margin-top:0.1rem;">Sign Up</a>
+            </div>
+          </form>
+          <form id="signupForm" style="display:none;">
+            <h2 class="login-title">Sign Up</h2>
+            <label for="signupEmail" class="login-label">Email</label>
+            <input type="email" id="signupEmail" name="signupEmail" required placeholder="Enter email" class="login-input">
+            <label for="signupUsername" class="login-label">Username</label>
+            <input type="text" id="signupUsername" name="signupUsername" required placeholder="Choose username" class="login-input">
+            <label for="signupPassword" class="login-label">Password</label>
+            <input type="password" id="signupPassword" name="signupPassword" required placeholder="Enter password" class="login-input">
+            <label for="signupPassword2" class="login-label">Re-enter Password</label>
+            <input type="password" id="signupPassword2" name="signupPassword2" required placeholder="Re-enter password" class="login-input">
+            <button type="submit" class="login-btn">Sign Up</button>
+            <div id="signupError" style="color:#f33;font-weight:700;margin-top:0.7rem;display:none;"></div>
+            <div id="signupSuccess" style="color:#22C55E;font-weight:700;margin-top:0.7rem;display:none;">Sign up successful! You can now log in.</div>
+            <div style="margin-top:1.2rem;text-align:center;">
+              <div style="color:#fff;font-size:1.08rem;margin-bottom:0.2rem;">Already have an account?</div>
+              <a href="#" id="showLoginForm" style="color:#22C55E;font-weight:700;font-size:1.13rem;display:inline-block;margin-top:0.1rem;">Log In</a>
+            </div>
           </form>
         </div>
       </div>
@@ -102,6 +128,88 @@
     </div>
   </footer>
   <script>
+    // ...existing code...
+    // User profile storage and helpers
+    function getUserProfiles() {
+      try {
+        return JSON.parse(localStorage.getItem('azoom_users') || '[]');
+      } catch { return []; }
+    }
+    function setUserProfiles(users) {
+      localStorage.setItem('azoom_users', JSON.stringify(users));
+    }
+    // Ensure at least one employee exists (default)
+    function ensureDefaultEmployee() {
+      let users = getUserProfiles();
+      if (!users.some(u => u.type === 'employee')) {
+        users.push({
+          email: 'employee@azoom.com',
+          username: 'employee',
+          password: 'employee123',
+          type: 'employee'
+        });
+        setUserProfiles(users);
+      }
+    }
+    ensureDefaultEmployee();
+
+    // Modal toggle logic
+    const loginMenuBtn = document.getElementById('loginMenuBtn');
+    const loginModal = document.getElementById('loginModal');
+    const closeLoginModalBtn = document.getElementById('closeLoginModal');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const loginError = document.getElementById('loginError');
+    const signupError = document.getElementById('signupError');
+    const signupSuccess = document.getElementById('signupSuccess');
+    function showLogin() {
+      loginForm.style.display = '';
+      signupForm.style.display = 'none';
+      loginError.style.display = 'none';
+      signupError.style.display = 'none';
+      signupSuccess.style.display = 'none';
+    }
+    function showSignup() {
+      loginForm.style.display = 'none';
+      signupForm.style.display = '';
+      loginError.style.display = 'none';
+      signupError.style.display = 'none';
+      signupSuccess.style.display = 'none';
+    }
+    // Delegate toggle links (since they are inside forms and re-rendered)
+    document.addEventListener('click', function(e) {
+      if (e.target && e.target.id === 'showSignupForm') {
+        e.preventDefault();
+        showSignup();
+      } else if (e.target && e.target.id === 'showLoginForm') {
+        e.preventDefault();
+        showLogin();
+      }
+    });
+
+    if (loginMenuBtn && loginModal) {
+      loginMenuBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        showLogin();
+      });
+    }
+    if (closeLoginModalBtn && loginModal) {
+      closeLoginModalBtn.addEventListener('click', () => {
+        loginModal.style.display = 'none';
+        document.body.style.overflow = '';
+      });
+    }
+    if (loginModal) {
+      loginModal.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+          loginModal.style.display = 'none';
+          document.body.style.overflow = '';
+        }
+      });
+    }
+
     // Popup modal logic
     function showPopup(message, onOk, countdownSeconds = 5) {
       const popupModal = document.getElementById('popupModal');
@@ -125,274 +233,298 @@
       let timer = null;
       if (countdownSeconds > 0) {
         timer = setInterval(() => {
-          seconds--;
-          popupSeconds.textContent = seconds;
-          if (seconds <= 0) {
+          if (--seconds <= 0) {
             clearInterval(timer);
             closePopup();
+          } else {
+            popupSeconds.textContent = seconds;
           }
         }, 1000);
       }
     }
 
-    // Login modal logic
-    const loginMenuBtn = document.getElementById('loginMenuBtn');
-    const loginModal = document.getElementById('loginModal');
-    const closeLoginModalBtn = document.getElementById('closeLoginModal');
-    const loginForm = document.getElementById('loginForm');
-    // Show/hide login modal
-    if (loginMenuBtn && loginModal) {
-      loginMenuBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        loginModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-      });
-    }
-    if (closeLoginModalBtn && loginModal) {
-      closeLoginModalBtn.addEventListener('click', () => {
-        loginModal.style.display = 'none';
-        document.body.style.overflow = '';
-      });
-    }
-    if (loginModal) {
-      loginModal.addEventListener('click', (e) => {
-        if (e.target === loginModal) {
-          loginModal.style.display = 'none';
-          document.body.style.overflow = '';
-        }
-      });
-    }
-    // Login logic with localStorage (copied from index.html, using popup for feedback)
-    if (loginForm) {
-      loginForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const username = loginForm.username.value.trim();
-        const password = loginForm.password.value.trim();
-        if (username && password) {
-          localStorage.setItem('azoom_logged_in', 'true');
-          localStorage.setItem('azoom_user', username);
-          if (username.toLowerCase() === 'employee') {
-            localStorage.setItem('azoom_role', 'employee');
-          } else {
-            localStorage.setItem('azoom_role', 'customer');
-          }
-          // Show popup and proceed after
-          showPopup('Login successful!', function () {
-            loginModal.style.display = 'none';
-            document.body.style.overflow = '';
-            updateAuthUI();
-            if (localStorage.getItem('azoom_role') === 'employee') {
-              window.location.href = 'employee-dashboard.html';
-            }
-          });
+    // Sign up logic
+    signupForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      signupError.style.display = 'none';
+      signupSuccess.style.display = 'none';
+      const email = signupForm.signupEmail.value.trim().toLowerCase();
+      const username = signupForm.signupUsername.value.trim();
+      const password = signupForm.signupPassword.value;
+      const password2 = signupForm.signupPassword2.value;
+      if (!email || !username || !password || !password2) {
+        signupError.textContent = 'All fields are required.';
+        signupError.style.display = 'block';
+        return;
+      }
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        signupError.textContent = 'Invalid email address.';
+        signupError.style.display = 'block';
+        return;
+      }
+      if (password.length < 6) {
+        signupError.textContent = 'Password must be at least 6 characters.';
+        signupError.style.display = 'block';
+        return;
+      }
+      if (password !== password2) {
+        signupError.textContent = 'Passwords do not match.';
+        signupError.style.display = 'block';
+        return;
+      }
+      let users = getUserProfiles();
+      if (users.some(u => u.email === email)) {
+        signupError.textContent = 'Email already in use.';
+        signupError.style.display = 'block';
+        return;
+      }
+      if (users.some(u => u.username === username)) {
+        signupError.textContent = 'Username already taken.';
+        signupError.style.display = 'block';
+        return;
+      }
+      users.push({ email, username, password, type: 'customer' });
+      setUserProfiles(users);
+      signupSuccess.style.display = 'block';
+      signupForm.reset();
+      setTimeout(() => {
+        showLogin();
+      }, 1200);
+    });
+
+    // Login logic
+    loginForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      loginError.style.display = 'none';
+      const username = loginForm.username.value.trim();
+      const password = loginForm.password.value;
+      if (!username || !password) {
+        loginError.textContent = 'Please enter username and password.';
+        loginError.style.display = 'block';
+        return;
+      }
+      let users = getUserProfiles();
+      const user = users.find(u => u.username === username && u.password === password);
+      if (!user) {
+        loginError.textContent = 'Invalid username or password.';
+        loginError.style.display = 'block';
+        return;
+      }
+      localStorage.setItem('azoom_logged_in', 'true');
+      localStorage.setItem('azoom_user', user.username);
+      localStorage.setItem('azoom_role', user.type);
+      loginModal.style.display = 'none';
+      document.body.style.overflow = '';
+      showPopup('Login successful!', function () {
+        updateAuthUI();
+        // Redirect to dashboard
+        if (user.type === 'employee') {
+          window.location.href = 'employee-dashboard.html';
         } else {
-          showPopup('Invalid user or password', null, 3);
+          window.location.href = 'customer-dashboard.html';
         }
-      });
-    }
-    // User menu dropdown logic (uniform with customer portal)
-    var userMenu = document.getElementById('userMenu');
-    var userMenuBtn = document.getElementById('userMenuBtn');
-    var userDropdown = document.getElementById('userDropdown');
+      }, 2);
+    });
     if (userMenuBtn && userDropdown) {
       userMenuBtn.addEventListener('click', (e) => {
-        e.preventDefault();
         userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
       });
-      document.addEventListener('click', (e) => {
-        if (!userMenu.contains(e.target) && e.target !== userMenuBtn) {
-          userDropdown.style.display = 'none';
-        }
-      });
-    }
-    document.getElementById('logoutBtn').addEventListener('click', (e) => {
-      e.preventDefault();
-      localStorage.removeItem('azoom_logged_in');
-      localStorage.removeItem('azoom_user');
-      localStorage.removeItem('azoom_role');
-      window.location.href = 'index.html#home';
-      updateAuthUI();
-    });
-    // Dashboard link logic
-    document.getElementById('dashboardLink').addEventListener('click', function (e) {
-      e.preventDefault();
-      const role = localStorage.getItem('azoom_role');
-      if (role === 'employee') {
-        window.location.href = 'employee-dashboard.html';
-      } else {
-        window.location.href = 'customer-dashboard.html';
-      }
-    });
-    // Hamburger menu logic (reuse from index.html)
-    const hamburger = document.getElementById("hamburger");
-    const menu = document.getElementById("hamburger-menu");
-    hamburger.addEventListener("click", (e) => {
-      e.stopPropagation();
-      menu.classList.toggle("active");
-    });
-    document.addEventListener("click", () => {
-      menu.classList.remove("active");
-    });
-
-    // Auth UI logic (reuse from index.html)
-    function updateAuthUI() {
-      const loggedIn = localStorage.getItem('azoom_logged_in') === 'true';
-      const userMenu = document.getElementById('userMenu');
-      const loginMenuBtn = document.getElementById('loginMenuBtn');
-      if (userMenu && loginMenuBtn) {
-        if (loggedIn) {
-          userMenu.style.display = 'inline-block';
-          loginMenuBtn.style.display = 'none';
-          const userMenuBtn = document.getElementById('userMenuBtn');
-          const user = localStorage.getItem('azoom_user') || 'User';
-          if (userMenuBtn) userMenuBtn.textContent = user + ' ▼';
-        } else {
-          userMenu.style.display = 'none';
-          loginMenuBtn.style.display = '';
-        }
+      if (userMenu && userMenuBtn && userDropdown) {
+        document.addEventListener('click', (e) => {
+          if (!userMenu.contains(e.target) && e.target !== userMenuBtn) {
+            userDropdown.style.display = 'none';
+          }
+        });
       }
     }
-    updateAuthUI();
-    window.addEventListener('storage', updateAuthUI);
-
-    // Logout logic
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', function (e) {
+      document.getElementById('logoutBtn').addEventListener('click', (e) => {
         e.preventDefault();
         localStorage.removeItem('azoom_logged_in');
         localStorage.removeItem('azoom_user');
+        localStorage.removeItem('azoom_role');
+        window.location.href = 'index.html#home';
         updateAuthUI();
-        document.getElementById('userDropdown').style.display = 'none';
       });
-    }
+      // Dashboard link logic
+      document.getElementById('dashboardLink').addEventListener('click', function (e) {
+        e.preventDefault();
+        const role = localStorage.getItem('azoom_role');
+        if (role === 'employee') {
+          window.location.href = 'employee-dashboard.html';
+        } else {
+          window.location.href = 'customer-dashboard.html';
+        }
+      });
+      // Hamburger menu logic (reuse from index.html)
+      const hamburger = document.getElementById("hamburger");
+      const menu = document.getElementById("hamburger-menu");
+      hamburger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.classList.toggle("active");
+      });
+      document.addEventListener("click", () => {
+        menu.classList.remove("active");
+      });
 
-    // All vehicle models and specs
-    // Store availability for each model
-    // Singapore context: Orchard Flagship (all vehicles), Changi Airport (no premium)
-    const allModels = [
-      {
-        category: "eco",
-        name: "Nissan Leaf",
-        img: "https://ev-database.org/img/auto/Nissan_Leaf_2022/Nissan_Leaf_2022-01.jpg",
-        specs: {
-          "Max Range": "370 km",
-          "Charging Time": "7-8 hrs",
-          "Seating": "5",
-          "Price/Day": "$45/day"
-        },
-        stores: { orchard: true, changi: true }
-      },
-      {
-        category: "eco",
-        name: "BYD Dolphin",
-        img: "https://ev-database.org/img/auto/BYD_DOLPHIN/BYD_DOLPHIN-01.jpg",
-        specs: {
-          "Max Range": "483 km",
-          "Charging Time": "6-7 hrs",
-          "Seating": "5",
-          "Price/Day": "$48/day"
-        },
-        stores: { orchard: true, changi: true }
-      },
-      {
-        category: "eco",
-        name: "Tesla Model 3",
-        img: "https://ev-database.org/img/auto/Tesla_Model_3_2021/Tesla_Model_3_2021-01.jpg",
-        specs: {
-          "Max Range": "576 km",
-          "Charging Time": "5-6 hrs",
-          "Seating": "5",
-          "Price/Day": "$58/day"
-        },
-        stores: { orchard: false, changi: false } // All rented
-      },
-      {
-        category: "family",
-        name: "Tesla Model Y",
-        img: "https://ev-database.org/img/auto/Tesla_Model_Y_2025/Tesla_Model_Y_2025-01.jpg",
-        specs: {
-          "Max Range": "531 km",
-          "Charging Time": "8-10 hrs",
-          "Seating": "7",
-          "Price/Day": "$85/day"
-        },
-        stores: { orchard: true, changi: true }
-      },
-      {
-        category: "family",
-        name: "Hyundai Ioniq 5",
-        img: "https://ev-database.org/img/auto/Hyundai_IONIQ5_2024/Hyundai_IONIQ5_2024-01.jpg",
-        specs: {
-          "Max Range": "488 km",
-          "Charging Time": "18 min (10-80%)",
-          "Seating": "5",
-          "Price/Day": "$80/day"
-        },
-        stores: { orchard: true, changi: true }
-      },
-      {
-        category: "family",
-        name: "Kia EV6",
-        img: "https://ev-database.org/img/auto/Kia_EV6_2021/Kia_EV6_2021-01.jpg",
-        specs: {
-          "Max Range": "499 km",
-          "Charging Time": "18 min (10-80%)",
-          "Seating": "5",
-          "Price/Day": "$78/day"
-        },
-        stores: { orchard: true, changi: true }
-      },
-      {
-        category: "premium",
-        name: "BMW i4",
-        img: "https://ev-database.org/img/auto/BMW_i4_2024/BMW_i4_2024-01.jpg",
-        specs: {
-          "Max Range": "484 km",
-          "Charging Time": "10-11 hrs",
-          "Seating": "5",
-          "Price/Day": "$125/day"
-        },
-        stores: { orchard: true, changi: false }
-      },
-      {
-        category: "premium",
-        name: "Mercedes EQE",
-        img: "https://ev-database.org/img/auto/Mercedes_EQE/Mercedes_EQE-01.jpg",
-        specs: {
-          "Max Range": "729 km",
-          "Charging Time": "11 hrs",
-          "Seating": "5",
-          "Price/Day": "$155/day"
-        },
-        stores: { orchard: true, changi: false }
-      },
-      {
-        category: "premium",
-        name: "Tesla Model S",
-        img: "https://ev-database.org/img/auto/Tesla_Model_S_2016/Tesla_Model_S_2016-01.jpg",
-        specs: {
-          "Max Range": "652 km",
-          "Charging Time": "12 hrs",
-          "Seating": "5",
-          "Price/Day": "$180/day"
-        },
-        stores: { orchard: true, changi: false }
+      // Auth UI logic (reuse from index.html)
+      function updateAuthUI() {
+        const loggedIn = localStorage.getItem('azoom_logged_in') === 'true';
+        const userMenu = document.getElementById('userMenu');
+        const loginMenuBtn = document.getElementById('loginMenuBtn');
+        if (userMenu && loginMenuBtn) {
+          if (loggedIn) {
+            userMenu.style.display = 'inline-block';
+            loginMenuBtn.style.display = 'none';
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const user = localStorage.getItem('azoom_user') || 'User';
+            if (userMenuBtn) userMenuBtn.textContent = user + ' ▼';
+          } else {
+            userMenu.style.display = 'none';
+            loginMenuBtn.style.display = '';
+          }
+        }
       }
-    ];
+      updateAuthUI();
+      window.addEventListener('storage', updateAuthUI);
 
-    // Render cards
-    const grid = document.getElementById('modelsGrid');
-    allModels.forEach((model, idx) => {
-      const card = document.createElement('div');
-      // Card color logic: red border/shadow if all rented, else default
-      let allRented = model.stores.orchard === false && model.stores.changi === false;
-      card.className = 'model-card';
-      if (allRented) {
-        card.style.borderColor = '#f33';
-        card.style.boxShadow = 'none';
+      // Logout logic
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          localStorage.removeItem('azoom_logged_in');
+          localStorage.removeItem('azoom_user');
+          updateAuthUI();
+          document.getElementById('userDropdown').style.display = 'none';
+        });
       }
-      card.innerHTML = `
+
+      // All vehicle models and specs
+      // Store availability for each model
+      // Singapore context: Orchard Flagship (all vehicles), Changi Airport (no premium)
+      const allModels = [
+        {
+          category: "eco",
+          name: "Nissan Leaf",
+          img: "https://ev-database.org/img/auto/Nissan_Leaf_2022/Nissan_Leaf_2022-01.jpg",
+          specs: {
+            "Max Range": "370 km",
+            "Charging Time": "7-8 hrs",
+            "Seating": "5",
+            "Price/Day": "$45/day"
+          },
+          stores: { orchard: true, changi: true }
+        },
+        {
+          category: "eco",
+          name: "BYD Dolphin",
+          img: "https://ev-database.org/img/auto/BYD_DOLPHIN/BYD_DOLPHIN-01.jpg",
+          specs: {
+            "Max Range": "483 km",
+            "Charging Time": "6-7 hrs",
+            "Seating": "5",
+            "Price/Day": "$48/day"
+          },
+          stores: { orchard: true, changi: true }
+        },
+        {
+          category: "eco",
+          name: "Tesla Model 3",
+          img: "https://ev-database.org/img/auto/Tesla_Model_3_2021/Tesla_Model_3_2021-01.jpg",
+          specs: {
+            "Max Range": "576 km",
+            "Charging Time": "5-6 hrs",
+            "Seating": "5",
+            "Price/Day": "$58/day"
+          },
+          stores: { orchard: false, changi: false } // All rented
+        },
+        {
+          category: "family",
+          name: "Tesla Model Y",
+          img: "https://ev-database.org/img/auto/Tesla_Model_Y_2025/Tesla_Model_Y_2025-01.jpg",
+          specs: {
+            "Max Range": "531 km",
+            "Charging Time": "8-10 hrs",
+            "Seating": "7",
+            "Price/Day": "$85/day"
+          },
+          stores: { orchard: true, changi: true }
+        },
+        {
+          category: "family",
+          name: "Hyundai Ioniq 5",
+          img: "https://ev-database.org/img/auto/Hyundai_IONIQ5_2024/Hyundai_IONIQ5_2024-01.jpg",
+          specs: {
+            "Max Range": "488 km",
+            "Charging Time": "18 min (10-80%)",
+            "Seating": "5",
+            "Price/Day": "$80/day"
+          },
+          stores: { orchard: true, changi: true }
+        },
+        {
+          category: "family",
+          name: "Kia EV6",
+          img: "https://ev-database.org/img/auto/Kia_EV6_2021/Kia_EV6_2021-01.jpg",
+          specs: {
+            "Max Range": "499 km",
+            "Charging Time": "18 min (10-80%)",
+            "Seating": "5",
+            "Price/Day": "$78/day"
+          },
+          stores: { orchard: true, changi: true }
+        },
+        {
+          category: "premium",
+          name: "BMW i4",
+          img: "https://ev-database.org/img/auto/BMW_i4_2024/BMW_i4_2024-01.jpg",
+          specs: {
+            "Max Range": "484 km",
+            "Charging Time": "10-11 hrs",
+            "Seating": "5",
+            "Price/Day": "$125/day"
+          },
+          stores: { orchard: true, changi: false }
+        },
+        {
+          category: "premium",
+          name: "Mercedes EQE",
+          img: "https://ev-database.org/img/auto/Mercedes_EQE/Mercedes_EQE-01.jpg",
+          specs: {
+            "Max Range": "729 km",
+            "Charging Time": "11 hrs",
+            "Seating": "5",
+            "Price/Day": "$155/day"
+          },
+          stores: { orchard: true, changi: false }
+        },
+        {
+          category: "premium",
+          name: "Tesla Model S",
+          img: "https://ev-database.org/img/auto/Tesla_Model_S_2016/Tesla_Model_S_2016-01.jpg",
+          specs: {
+            "Max Range": "652 km",
+            "Charging Time": "12 hrs",
+            "Seating": "5",
+            "Price/Day": "$180/day"
+          },
+          stores: { orchard: true, changi: false }
+        }
+      ];
+
+      // Render cards
+      const grid = document.getElementById('modelsGrid');
+      allModels.forEach((model, idx) => {
+        const card = document.createElement('div');
+        // Card color logic: red border/shadow if all rented, else default
+        let allRented = model.stores.orchard === false && model.stores.changi === false;
+        card.className = 'model-card';
+        if (allRented) {
+          card.style.borderColor = '#f33';
+          card.style.boxShadow = 'none';
+        }
+        card.innerHTML = `
         <img src="${model.img}" alt="${model.name}" loading="lazy">
         <h3 style="${allRented ? 'text-shadow:none;color:#f33;' : ''}">${model.name}</h3>
         <div class="model-specs">
@@ -415,29 +547,29 @@
         </div>
         <button class="rent-btn" data-model="${model.name}" data-category="${model.category}" data-orchard="${model.stores.orchard}" data-changi="${model.stores.changi}" data-price="${model.specs["Price/Day"]}" ${allRented ? 'disabled style="background:#f33;color:#fff;opacity:0.7;cursor:not-allowed;"' : ''}>${allRented ? 'Unavailable' : 'Rent'}</button>
       `;
-      grid.appendChild(card);
-    });
+        grid.appendChild(card);
+      });
 
-    // Rent button logic: go to rent.html with preselected model and store availability
-    grid.addEventListener('click', function (e) {
-      if (e.target.classList.contains('rent-btn')) {
-        const loggedIn = localStorage.getItem('azoom_logged_in') === 'true';
-        if (!loggedIn) {
-          showPopup('You must be logged in to rent.', function () {
-            // After popup closes, show login modal
-            loginModal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-          }, 3);
-          return;
+      // Rent button logic: go to rent.html with preselected model and store availability
+      grid.addEventListener('click', function (e) {
+        if (e.target.classList.contains('rent-btn')) {
+          const loggedIn = localStorage.getItem('azoom_logged_in') === 'true';
+          if (!loggedIn) {
+            showPopup('You must be logged in to rent.', function () {
+              // After popup closes, show login modal
+              loginModal.style.display = 'flex';
+              document.body.style.overflow = 'hidden';
+            }, 3);
+            return;
+          }
+          const model = encodeURIComponent(e.target.getAttribute('data-model'));
+          const category = encodeURIComponent(e.target.getAttribute('data-category'));
+          const orchard = e.target.getAttribute('data-orchard');
+          const changi = e.target.getAttribute('data-changi');
+          const price = encodeURIComponent(e.target.getAttribute('data-price'));
+          window.location.href = `rent.html?model=${model}&category=${category}&orchard=${orchard}&changi=${changi}&price=${price}`;
         }
-        const model = encodeURIComponent(e.target.getAttribute('data-model'));
-        const category = encodeURIComponent(e.target.getAttribute('data-category'));
-        const orchard = e.target.getAttribute('data-orchard');
-        const changi = e.target.getAttribute('data-changi');
-        const price = encodeURIComponent(e.target.getAttribute('data-price'));
-        window.location.href = `rent.html?model=${model}&category=${category}&orchard=${orchard}&changi=${changi}&price=${price}`;
-      }
-    });
+      });
   </script>
 </body>
 

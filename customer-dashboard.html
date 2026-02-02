@@ -74,6 +74,27 @@
         }
       });
     }
+
+    // Logout button logic (main and dropdown) - always attach on DOMContentLoaded
+    function logoutAndRedirect() {
+      localStorage.removeItem('azoom_logged_in');
+      localStorage.removeItem('azoom_user');
+      localStorage.removeItem('azoom_role');
+      window.location.href = 'index.html#home';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      var logoutBtnMain = document.getElementById('logoutBtnMain');
+      if (logoutBtnMain) {
+        logoutBtnMain.addEventListener('click', logoutAndRedirect);
+      }
+      var logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          logoutAndRedirect();
+        });
+      }
+    });
         // Show reservations from localStorage
         function renderReservations() {
           const user = localStorage.getItem('azoom_user') || 'User';
@@ -426,8 +447,6 @@
     }
     updateAuthUI();
     window.addEventListener('storage', updateAuthUI);
-
-    // (Removed duplicate logout and cancel reservation logic. Now handled in renderReservations and logoutAndRedirect.)
   </script>
 </body>
 </html>

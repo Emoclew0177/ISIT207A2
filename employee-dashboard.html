@@ -100,7 +100,12 @@
           rentalIdHtml +
           `<div><b>Customer:</b> ${res.user}</div>` +
           `<div><b>Car:</b> ${res.model}</div>` +
-          `<div><b>Pickup:</b> ${res.store}</div>` +
+          `<div><b>Pickup:</b> ${(() => {
+            let loc = (res.store || '').toLowerCase();
+            if (loc === 'orchard') return 'Orchard';
+            if (loc === 'changi') return 'Changi';
+            return res.store ? res.store.charAt(0).toUpperCase() + res.store.slice(1) : '';
+          })()}</div>` +
           `<div><b>Start Date:</b> ${res.startDate}</div>` +
           `<div><b>Duration:</b> ${durationStr}</div>` +
           `<div><b>Status:</b> <span class="status">${res.status}</span></div>` +

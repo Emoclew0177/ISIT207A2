@@ -354,7 +354,7 @@
       localStorage.setItem('azoom_reservations', JSON.stringify(reservations));
       // Show popup and proceed after
       showPopup('Reservation and payment successful! Confirmation sent to your email.', () => {
-        document.getElementById('rentForm').reset();
+        window.location.href = 'customer-dashboard.html';
       });
     });
   </script>

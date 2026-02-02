@@ -131,11 +131,17 @@
       html += `<b>Rental ID:</b> ${res.rentalId || ''}<br>`;
       html += `<b>Customer:</b> ${res.user}<br>`;
       html += `<b>Car:</b> ${res.model}<br>`;
-      html += `<b>Pickup Location:</b> ${res.store}<br>`;
+      // Capitalize pickup location
+      let loc = (res.store || '').toLowerCase();
+      let locName = '';
+      if (loc === 'orchard') locName = 'Orchard';
+      else if (loc === 'changi') locName = 'Changi';
+      else locName = res.store ? res.store.charAt(0).toUpperCase() + res.store.slice(1) : '';
+      html += `<b>Pickup Location:</b> ${locName}<br>`;
       html += `<b>Start Date:</b> ${res.startDate}<br>`;
       html += `<b>Duration:</b> ${res.duration} ${res.period}<br>`;
       html += `<b>Status:</b> ${res.status}<br>`;
-      html += `<b>Created:</b> ${res.created ? new Date(res.created).toLocaleString() : ''}<br>`;
+      // Removed Created field
       html += `<div style='margin-top:1.2rem;'><span class='receipt-section-title'>Charges</span></div>`;
       html += `<b>Base Cost:</b> ${res.cost || ''}<br>`;
       // Show damage breakdown if present

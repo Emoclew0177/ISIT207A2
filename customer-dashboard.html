@@ -157,7 +157,54 @@
                 <span style="font-size:1rem;font-weight:600;color:${statusColor};text-transform:uppercase;">${statusLabel}</span>
               </div>
               <div style="margin-top:0.7rem;">
-                <strong>Pickup:</strong> ${res.store}<br>
+                ${(() => {
+                  // Pickup From with map link and capitalization
+                  let loc = (res.store || '').toLowerCase();
+                  let locName = '';
+                  let mapUrl = '';
+                  if (loc === 'orchard') {
+                    locName = 'Orchard';
+                    mapUrl = 'https://www.google.com/maps/place/391+Orchard+Road,+Ngee+Ann+City,+Singapore+238872';
+                  } else if (loc === 'changi') {
+                    locName = 'Changi';
+                    mapUrl = 'https://www.google.com/maps/place/Changi+Airport+Terminal+3,+Singapore+819643';
+                  } else {
+                    locName = res.store ? res.store.charAt(0).toUpperCase() + res.store.slice(1) : '';
+                    mapUrl = '';
+                  }
+                  if (locName && mapUrl) {
+                    return `<strong>Pickup From:</strong> <a href="${mapUrl}" target="_blank" rel="noopener" style="color:var(--accent-color);text-decoration:underline;">${locName}</a><br>`;
+                  } else if (locName) {
+                    return `<strong>Pickup From:</strong> ${locName}<br>`;
+                  } else {
+                    return '';
+                  }
+                })()}
+                ${(() => {
+                  // Show Return To only for Released, Payment Awaiting, Completed
+                  const releasedStatuses = ['Released', 'Payment Awaiting', 'Completed'];
+                  if (!releasedStatuses.includes(res.status)) return '';
+                  let loc = (res.store || '').toLowerCase();
+                  let locName = '';
+                  let mapUrl = '';
+                  if (loc === 'orchard') {
+                    locName = 'Orchard';
+                    mapUrl = 'https://www.google.com/maps/place/391+Orchard+Road,+Ngee+Ann+City,+Singapore+238872';
+                  } else if (loc === 'changi') {
+                    locName = 'Changi';
+                    mapUrl = 'https://www.google.com/maps/place/Changi+Airport+Terminal+3,+Singapore+819643';
+                  } else {
+                    locName = res.store ? res.store.charAt(0).toUpperCase() + res.store.slice(1) : '';
+                    mapUrl = '';
+                  }
+                  if (locName && mapUrl) {
+                    return `<strong>Return To:</strong> <a href="${mapUrl}" target="_blank" rel="noopener" style="color:var(--accent-color);text-decoration:underline;">${locName}</a><br>`;
+                  } else if (locName) {
+                    return `<strong>Return To:</strong> ${locName}<br>`;
+                  } else {
+                    return '';
+                  }
+                })()}
                 <strong>Start Date:</strong> ${res.startDate}<br>
                 <strong>Duration:</strong> ${durationStr}<br>
                 <strong>Cost:</strong> ${res.cost}<br>

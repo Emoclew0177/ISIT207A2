@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AZoom Car Rental</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-text no-select">AZOOM</span>
+    </div>
+    <nav class="menu" id="hamburger-menu">
+      <a href="#home">Home</a>
+      <a href="#fleet">Our Fleet</a>
+      <a href="#about">About Us</a>
+      <a href="models.html">Rent</a>
+      <a href="#" id="loginMenuBtn">Login</a>
+      <div id="userMenu" class="user-menu">
+        <a href="#" id="userMenuBtn" style="color:var(--accent-color);font-weight:800;">User ▼</a>
+        <div id="userDropdown"
+          class="user-dropdown">
+          <a href="login.html"
+            class="dropdown-link dashboard-link">Dashboard</a>
+          <a href="#" id="logoutBtn"
+            class="dropdown-link logout-link">Logout</a>
+        </div>
+      </div>
+      <!-- Login Modal -->
+      <div id="loginModal"
+        class="login-modal">
+        <div
+          class="login-modal-content">
+          <button id="closeLoginModal" class="close-login-modal close-green" aria-label="Close login modal">&times;</button>
+          <form id="loginForm">
+            <h2 class="login-title">Login</h2>
+            <label for="username" class="login-label">Username</label>
+            <input type="text" id="username" name="username" required placeholder="Enter username" class="login-input">
+            <label for="password" class="login-label">Password</label>
+            <input type="password" id="password" name="password" required placeholder="Enter password" class="login-input">
+            <button type="submit" class="login-btn">Login</button>
+            <div id="loginSuccess" class="login-success">Login successful!</div>
+            <div id="loginError" class="login-error">Invalid credentials. Try again.</div>
+          </form>
+        </div>
+      </div>
+    </nav>
+    <button class="menu-toggle" id="hamburger">☰</button>
+  </header>
+
+  <main class="page">
+    <section id="home" class="hero snap-section fade-in-up">
+      <img
+        src="https://carinsurent.com/wp-content/uploads/2024/01/A-selection-of-electric-vehicles-parked-in-a-row-at-a-charging-station.png"
+        alt="" class="hero-img" loading="lazy">
+
+      <div class="hero-content">
+        <h1>Drive Singapore, Sustainably</h1>
+        <p>Pick up your electric vehicle at Changi Airport or Orchard and enjoy seamless, eco-friendly travel with the latest EVs and premium service. Your journey, your way—powered by AZOOM.</p>
+        <a href="models.html"><button class="reserve-btn">Reserve Your Car</button></a>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+
+    <section id="fleet" class="snap-section ev-categories">
+
+      <h2 class="ev-title">OUR FLEET</h2>
+
+      <div class="ev-cards">
+        <!-- ECO -->
+        <article class="ev-card" data-category="eco">
+          <div class="ev-card-content">
+            <h3>ECO</h3>
+            <p class="ev-desc">
+              Efficient, compact EVs perfect for city driving and short trips.
+            </p>
+
+            <ul class="ev-points">
+              <li>Lowest rental cost</li>
+              <li>Easy urban parking</li>
+              <li>Excellent range efficiency</li>
+            </ul>
+          </div>
+
+          <div class="ev-expanded">
+            <div class="ev-info">
+              <h3 class="model-title">Nissan Leaf</h3>
+              <p class="model-pitch">The Nissan Leaf is the world’s best-selling EV, perfect for city commutes with
+                agile handling and unbeatable efficiency. Enjoy a smooth, quiet ride and save on every trip.</p>
+              <div class="ev-specs">
+                <h4>Specifications</h4>
+                <ul>
+                  <li><span>Max Range:</span> <span class="spec-value" data-spec="range">370 km</span></li>
+                  <li><span>Charging Time:</span> <span class="spec-value" data-spec="charging">6-8 hrs</span></li>
+                  <li><span>Seating:</span> <span class="spec-value" data-spec="seating">5 passengers</span></li>
+                  <li><span>Price/Day:</span> <span class="spec-value" data-spec="price">$45-65</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="ev-carousel">
+              <div class="car-display">
+                <img src="nissan-leaf.png" alt="eco ev" loading="lazy">
+
+                <div class="carousel-controls">
+                  <button class="nav left">‹</button>
+                  <div class="carousel-indicators"></div>
+                  <button class="nav right">›</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- FAMILY -->
+        <article class="ev-card" data-category="family">
+          <div class="ev-card-content">
+            <h3>FAMILY</h3>
+            <p class="ev-desc">
+              Spacious EVs designed for comfort, safety, and group travel.
+            </p>
+
+            <ul class="ev-points">
+              <li>More cabin space</li>
+              <li>Higher safety rating</li>
+              <li>Great for road trips</li>
+            </ul>
+          </div>
+
+          <div class="ev-expanded">
+            <div class="ev-info">
+              <h3 class="model-title">Tesla Model Y</h3>
+              <p class="model-pitch">The Tesla Model Y offers unmatched space, safety, and technology for families.
+                Enjoy long road trips with advanced autopilot and plenty of room for everyone.</p>
+              <div class="ev-specs">
+                <h4>Specifications</h4>
+                <ul>
+                  <li><span>Max Range:</span> <span class="spec-value" data-spec="range">402-483 km</span></li>
+                  <li><span>Charging Time:</span> <span class="spec-value" data-spec="charging">7-9 hrs</span></li>
+                  <li><span>Seating:</span> <span class="spec-value" data-spec="seating">7 passengers</span></li>
+                  <li><span>Price/Day:</span> <span class="spec-value" data-spec="price">$65-90</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="ev-carousel">
+              <div class="car-display">
+                <img src="model-y.png" alt="family ev" loading="lazy">
+                <div class="carousel-controls">
+                  <button class="nav left">‹</button>
+                  <div class="carousel-indicators"></div>
+                  <button class="nav right">›</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- PREMIUM -->
+        <article class="ev-card" data-category="premium">
+          <div class="ev-card-content">
+            <h3>PREMIUM</h3>
+            <p class="ev-desc">
+              High-performance EVs with luxury interiors and advanced technology.
+            </p>
+
+            <ul class="ev-points">
+              <li>Luxury interiors</li>
+              <li>Advanced driver assistance</li>
+              <li>Top-tier performance</li>
+            </ul>
+          </div>
+
+          <div class="ev-expanded">
+            <div class="ev-info">
+              <h3 class="model-title">BMW i4</h3>
+              <p class="model-pitch">The BMW i4 delivers luxury and performance in a sleek electric package. Experience
+                instant acceleration, refined comfort, and the latest in EV innovation.</p>
+              <div class="ev-specs">
+                <h4>Specifications</h4>
+                <ul>
+                  <li><span>Max Range:</span> <span class="spec-value" data-spec="range">418-729 km</span></li>
+                  <li><span>Charging Time:</span> <span class="spec-value" data-spec="charging">5-7 hrs</span></li>
+                  <li><span>Seating:</span> <span class="spec-value" data-spec="seating">5 passengers</span></li>
+                  <li><span>Price/Day:</span> <span class="spec-value" data-spec="price">$120-180</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="ev-carousel">
+              <div class="car-display">
+                <img src="bmw-i4.png" alt="premium ev" loading="lazy">
+                <div class="carousel-controls">
+                  <button class="nav left">‹</button>
+                  <div class="carousel-indicators"></div>
+                  <button class="nav right">›</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="ev-instructions">
+        <p>Click on a category card to explore vehicle options and specifications</p>
+      </div>
+
+      <div class="ev-cta">
+        <a href="models.html"><button class="cta-btn">Start Renting</button></a>
+      </div>
+
+      <hr class="section-divider">
+
+    </section>
+
+    <section id="about" class="snap-section about-us">
+      <div class="about-us-content">
+        <div class="company-info">
+          <h2 class="about-title">About AZOOM</h2>
+          <p class="company-description">
+            AZOOM is Singapore's dedicated electric vehicle rental service, making sustainable mobility easy and accessible. With convenient pickup at Changi Airport and a premium fleet at our Orchard Flagship, you can enjoy the latest EVs, luxury options, and personalized service—whether you're here for a quick visit or everyday journeys. Experience the future of driving with AZOOM.
+          </p>
+        </div>
+
+        <div class="stores-section">
+          <h3 class="stores-title">Our Locations</h3>
+
+          <div class="stores-container">
+            <div class="store-card slide-in-left">
+              <h4>Orchard Flagship</h4>
+              <p><strong>Address:</strong> 391 Orchard Road, Ngee Ann City, Singapore 238872</p>
+              <p><strong>Phone:</strong> <a href="tel:+6561234567">+65 6123 4567</a></p>
+              <div class="store-hours">
+                <strong>Hours:</strong>
+                <ul>
+                  <li>Mon - Sun: 10:00 AM - 9:00 PM</li>
+                  <li>(Open daily, excluding public holidays)</li>
+                </ul>
+              </div>
+              <iframe class="store-map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1994.963964232839!2d103.8328!3d1.3039!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da199c2e2b1b6b%3A0x7e2b1b6b7e2b1b6b!2sNgee%20Ann%20City!5e0!3m2!1sen!2ssg!4v1700000000000"
+                width="100%" height="250" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
+            <div class="store-card slide-in-right">
+              <h4>Changi Airport (Terminal 3)</h4>
+              <p><strong>Address:</strong> 60 Airport Boulevard, Changi Airport Terminal 3, Singapore 819643</p>
+              <p><strong>Phone:</strong> <a href="tel:+6562345678">+65 6234 5678</a></p>
+              <div class="store-hours">
+                <strong>Hours:</strong>
+                <ul>
+                    <li>Open 24/7</li>
+                </ul>
+              </div>
+              <iframe class="store-map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1994.963964232839!2d103.9894!3d1.3571!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da3bbf1b1b1b1b%3A0x1b1b1b1b1b1b1b1b!2sChangi%20Airport%20Terminal%203!5e0!3m2!1sen!2ssg!4v1700000000001"
+                width="100%" height="250" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <h3>Follow Us</h3>
+      <div class="social-links">
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook">
+          <span>f</span>
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter">
+          <span>𝕏</span>
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram">
+          <span>📷</span>
+        </a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+          <span>in</span>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 AZOOM. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    /* Hamburger-Menu Button Logic*/
+    const hamburger = document.getElementById("hamburger");
+    const menu = document.getElementById("hamburger-menu");
+
+    hamburger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menu.classList.toggle("active");
+    });
+
+    // Close when clicking elsewhere
+    document.addEventListener("click", () => {
+      menu.classList.remove("active");
+    });
+
+    // Login modal logic
+    const loginMenuBtn = document.getElementById('loginMenuBtn');
+    const loginModal = document.getElementById('loginModal');
+    const closeLoginModalBtns = document.querySelectorAll('#closeLoginModal');
+    const loginForm = document.getElementById('loginForm');
+    const loginSuccess = document.getElementById('loginSuccess');
+    const loginError = document.getElementById('loginError');
+
+    // Show/hide login modal
+    loginMenuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+    closeLoginModalBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        loginModal.style.display = 'none';
+        document.body.style.overflow = '';
+      });
+    });
+    loginModal.addEventListener('click', (e) => {
+      if (e.target === loginModal) {
+        loginModal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Login logic with localStorage
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = loginForm.username.value.trim();
+      const password = loginForm.password.value.trim();
+      // Hide error on new attempt
+      loginError.style.display = 'none';
+      // For demo: employee login if username is 'employee' (case-insensitive)
+      if (username && password) {
+        localStorage.setItem('azoom_logged_in', 'true');
+        localStorage.setItem('azoom_user', username);
+        if (username.toLowerCase() === 'employee') {
+          localStorage.setItem('azoom_role', 'employee');
+        } else {
+          localStorage.setItem('azoom_role', 'customer');
+        }
+        loginSuccess.style.display = 'block';
+        setTimeout(() => {
+          loginSuccess.style.display = 'none';
+          loginModal.style.display = 'none';
+          document.body.style.overflow = '';
+          updateAuthUI();
+          // Redirect employee to dashboard
+          if (localStorage.getItem('azoom_role') === 'employee') {
+            window.location.href = 'employee-dashboard.html';
+          }
+        }, 800);
+      } else {
+        loginError.style.display = 'block';
+        loginSuccess.style.display = 'none';
+      }
+    });
+
+    // Update UI based on login state
+    function updateAuthUI() {
+      const loggedIn = localStorage.getItem('azoom_logged_in') === 'true';
+      const userMenu = document.getElementById('userMenu');
+      const loginMenuBtn = document.getElementById('loginMenuBtn');
+      const userMenuBtn = document.getElementById('userMenuBtn');
+      const user = localStorage.getItem('azoom_user') || 'User';
+      const role = localStorage.getItem('azoom_role');
+      if (loggedIn) {
+        userMenu.style.display = 'inline-block';
+        loginMenuBtn.style.display = 'none';
+        if (userMenuBtn) {
+          if (role === 'employee') {
+            userMenuBtn.textContent = 'Employee ▼';
+            // Change dashboard link to employee dashboard
+            const dashLink = document.querySelector('.dashboard-link');
+            if (dashLink) dashLink.setAttribute('href', 'employee-dashboard.html');
+          } else {
+            userMenuBtn.textContent = user + ' ▼';
+            const dashLink = document.querySelector('.dashboard-link');
+            if (dashLink) dashLink.setAttribute('href', 'login.html');
+          }
+        }
+      } else {
+        userMenu.style.display = 'none';
+        loginMenuBtn.style.display = '';
+      }
+    }
+    updateAuthUI();
+    // Also update on storage event (multi-tab)
+    window.addEventListener('storage', updateAuthUI);
+    // User menu dropdown logic
+    const userMenu = document.getElementById('userMenu');
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    const userDropdown = document.getElementById('userDropdown');
+    userMenuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', (e) => {
+      if (!userMenu.contains(e.target) && e.target !== userMenuBtn) {
+        userDropdown.style.display = 'none';
+      }
+    });
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('azoom_logged_in');
+      localStorage.removeItem('azoom_user');
+      localStorage.removeItem('azoom_role');
+      userMenu.style.display = 'none';
+      loginMenuBtn.style.display = '';
+      userDropdown.style.display = 'none';
+      updateAuthUI();
+    });
+    // Login form logic
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const successMsg = document.getElementById('loginSuccess');
+      const errorMsg = document.getElementById('loginError');
+      if (username === 'user' && password === 'pass') {
+        successMsg.style.display = 'block';
+        errorMsg.style.display = 'none';
+        this.reset();
+        setTimeout(() => {
+          successMsg.style.display = 'none';
+          loginModal.style.display = 'none';
+          document.body.style.overflow = '';
+          loginMenuBtn.style.display = 'none';
+          userMenu.style.display = 'inline-block';
+        }, 1200);
+      } else {
+        errorMsg.style.display = 'block';
+        successMsg.style.display = 'none';
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Footer always visible
+      const footer = document.querySelector('.footer');
+      if (footer) {
+        footer.style.display = 'block';
+      }
+
+      // --- HERO ANIMATION ---
+      const hero = document.querySelector('.hero');
+      setTimeout(() => {
+        hero.classList.add('visible');
+      }, 100);
+
+
+
+
+      // --- ABOUT US MAP CARDS ANIMATION (always plays when scrolled into view) ---
+      const aboutSection = document.querySelector('.about-us');
+      const mapCards = aboutSection.querySelectorAll('.store-card');
+      function animateAboutCards() {
+        const rect = aboutSection.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 120 && rect.bottom > 0) {
+          mapCards.forEach((card, i) => {
+            setTimeout(() => card.classList.add('visible'), 120 + i * 180);
+          });
+        } else {
+          mapCards.forEach(card => card.classList.remove('visible'));
+        }
+      }
+      window.addEventListener('scroll', animateAboutCards);
+      animateAboutCards();
+
+      // --- CARD EXPAND / COLLAPSE ---
+      const cardsContainer = document.querySelector(".ev-cards");
+      const evCards = document.querySelectorAll('.ev-card');
+      let activeCard = null;
+      evCards.forEach(card => {
+        card.addEventListener("click", (e) => {
+          // Prevent carousel button clicks from re-triggering card toggle
+          if (e.target.closest(".nav")) return;
+          const isActive = card.classList.contains("active");
+          // Reset all cards
+          evCards.forEach(c => c.classList.remove("active"));
+          cardsContainer.classList.remove("expanded");
+          activeCard = null;
+          // If it wasn't active, activate it
+          if (!isActive) {
+            card.classList.add("active");
+            cardsContainer.classList.add("expanded");
+            activeCard = card;
+          }
+          e.stopPropagation();
+        });
+      });
+      // Close card when clicking elsewhere
+      document.addEventListener("click", (e) => {
+        if (activeCard && !activeCard.contains(e.target)) {
+          activeCard.classList.remove("active");
+          cardsContainer.classList.remove("expanded");
+          activeCard = null;
+        }
+      });
+
+      // --- CAROUSEL LOGIC ---
+      const carData = {
+        eco: [
+          { img: "https://ev-database.org/img/auto/Nissan_Leaf_2022/Nissan_Leaf_2022-01.jpg", name: "Nissan Leaf", range: "370 km", charging: "7-8 hrs", seating: "5", price: "$45/day" },
+          { img: "https://ev-database.org/img/auto/BYD_DOLPHIN/BYD_DOLPHIN-01.jpg", name: "BYD Dolphin", range: "483 km", charging: "6-7 hrs", seating: "5", price: "$48/day" },
+          { img: "https://ev-database.org/img/auto/Tesla_Model_3_2021/Tesla_Model_3_2021-01.jpg", name: "Tesla Model 3", range: "576 km", charging: "5-6 hrs", seating: "5", price: "$58/day" }
+        ],
+        family: [
+          { img: "https://ev-database.org/img/auto/Tesla_Model_Y_2025/Tesla_Model_Y_2025-01.jpg", name: "Tesla Model Y", range: "531 km", charging: "8-10 hrs", seating: "7", price: "$85/day" },
+          { img: "https://ev-database.org/img/auto/Hyundai_IONIQ5_2024/Hyundai_IONIQ5_2024-01.jpg", name: "Hyundai Ioniq 5", range: "488 km", charging: "7-8 hrs", seating: "5", price: "$80/day" },
+          { img: "https://ev-database.org/img/auto/Kia_EV6_2021/Kia_EV6_2021-01.jpg", name: "Kia EV6", range: "499 km", charging: "7-8 hrs", seating: "5", price: "$78/day" }
+        ],
+        premium: [
+          { img: "https://ev-database.org/img/auto/BMW_i4_2024/BMW_i4_2024-01.jpg", name: "BMW i4", range: "484 km", charging: "10-11 hrs", seating: "5", price: "$125/day" },
+          { img: "https://ev-database.org/img/auto/Mercedes_EQE/Mercedes_EQE-01.jpg", name: "Mercedes EQE", range: "729 km", charging: "11 hrs", seating: "5", price: "$155/day" },
+          { img: "https://ev-database.org/img/auto/Tesla_Model_S_2016/Tesla_Model_S_2016-01.jpg", name: "Tesla Model S", range: "652 km", charging: "12 hrs", seating: "5", price: "$180/day" }
+        ]
+      };
+      const imageCache = {};
+      function preloadImages(carData) {
+        Object.values(carData).flat().forEach(car => {
+          const img = new Image();
+          img.src = car.img;
+          imageCache[car.img] = img;
+        });
+      }
+      preloadImages(carData);
+      // Add model sales pitches
+      const modelPitches = {
+        'Nissan Leaf': 'The Nissan Leaf is the world’s best-selling EV, perfect for city commutes with agile handling and unbeatable efficiency. Enjoy a smooth, quiet ride and save on every trip.',
+        'BYD Dolphin': 'The BYD Dolphin combines futuristic design with practical range and comfort. Ideal for urban explorers who want style and substance in one compact EV.',
+        'Tesla Model 3': 'Tesla Model 3 brings cutting-edge tech and exhilarating performance to your daily drive. Go further, charge faster, and enjoy the future of driving.',
+        'Tesla Model Y': 'The Tesla Model Y offers unmatched space, safety, and technology for families. Enjoy long road trips with advanced autopilot and plenty of room for everyone.',
+        'Hyundai Ioniq 5': 'Hyundai Ioniq 5 redefines electric mobility with ultra-fast charging and a spacious, high-tech interior. Perfect for families and adventurers alike.',
+        'Kia EV6': 'Kia EV6 delivers bold design, rapid charging, and a thrilling drive. Make every journey memorable with this award-winning electric crossover.',
+        'BMW i4': 'The BMW i4 delivers luxury and performance in a sleek electric package. Experience instant acceleration, refined comfort, and the latest in EV innovation.',
+        'Mercedes EQE': 'Mercedes EQE sets the standard for electric luxury sedans. Enjoy a serene ride, advanced tech, and impressive range in every drive.',
+        'Tesla Model S': 'Tesla Model S is the ultimate electric grand tourer—blistering speed, long range, and a minimalist, tech-forward cabin.',
+      };
+      evCards.forEach(card => {
+        const category = card.dataset.category;
+        const cars = carData[category];
+        let index = 0;
+        const display = card.querySelector(".car-display img");
+        const modelTitle = card.querySelector(".model-title");
+        const modelPitch = card.querySelector(".model-pitch");
+        const leftBtn = card.querySelector(".nav.left");
+        const rightBtn = card.querySelector(".nav.right");
+        const indicators = card.querySelector(".carousel-indicators");
+        function updateCar() {
+          const car = cars[index];
+          const cachedImg = imageCache[car.img];
+          display.src = cachedImg.src;
+          modelTitle.textContent = car.name;
+          modelPitch.textContent = modelPitches[car.name] || '';
+          // Update specifications
+          const specElements = card.querySelectorAll('[data-spec]');
+          specElements.forEach(el => {
+            el.textContent = car[el.dataset.spec];
+          });
+          // Update indicators
+          indicators.innerHTML = '';
+          cars.forEach((c, i) => {
+            const dot = document.createElement('span');
+            dot.className = 'carousel-dot' + (i === index ? ' active' : '');
+            dot.title = c.name;
+            indicators.appendChild(dot);
+          });
+        }
+        // Initialize with first car
+        updateCar();
+        leftBtn.addEventListener("click", () => {
+          index = (index - 1 + cars.length) % cars.length;
+          updateCar();
+        });
+        rightBtn.addEventListener("click", () => {
+          index = (index + 1) % cars.length;
+          updateCar();
+        });
+      });
+
+      // Close mobile menu when a link is clicked
+      const navLinks = document.querySelectorAll('.menu a');
+      navLinks.forEach(a => {
+        a.addEventListener('click', (e) => {
+          if (menu.classList.contains('active')) menu.classList.remove('active');
+        });
+      });
+    });
+
+
+  </script>
+</body>
+
+</html>

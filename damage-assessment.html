@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Damage Assessment | AZoom Car Rental</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: #fff;
+      color: #111;
+      font-family: Arial, sans-serif;
+    }
+    .damage-form-container {
+      max-width: 540px;
+      margin: 3rem auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      padding: 2.5rem 2.5rem 2rem 2.5rem;
+      border: 2px solid #22C55E;
+    }
+    .damage-form-title {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #22C55E;
+      margin-bottom: 1.2rem;
+      text-align: center;
+    }
+    .damage-list {
+      margin: 1.5rem 0 1rem 0;
+      padding: 0;
+      list-style: none;
+    }
+    .damage-list .damage-item {
+      background: #fafafa;
+      border: 2px solid #111;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      padding: 0.9rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+    .damage-list .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
+    .damage-list .item-comment {
+      font-size: 0.98rem;
+      color: #666;
+      margin-top: 0.3rem;
+    }
+    .remove-btn {
+      background: #fff;
+      color: #f33;
+      border: 1px solid #f33;
+      border-radius: 4px;
+      padding: 0.2rem 0.8rem;
+      font-size: 0.98rem;
+      cursor: pointer;
+      margin-left: 1rem;
+    }
+    .remove-btn:hover { background: #f33; color: #fff; }
+    .form-group { margin-bottom: 1.2rem; }
+    label { font-weight: 600; }
+    input, textarea { width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid #bbb; margin-top: 0.3rem; }
+    textarea { resize: vertical; min-height: 40px; }
+    .add-btn {
+      background: #22C55E;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 0.5rem 1.5rem;
+      margin-top: 0.5rem;
+      cursor: pointer;
+    }
+    .add-btn:hover { background: #111; color: #fff; }
+    .submit-btn {
+      background: #22C55E;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 0.7rem 2.2rem;
+      margin-top: 1.2rem;
+      cursor: pointer;
+      width: 100%;
+    }
+    .submit-btn:hover { background: #111; color: #fff; }
+    .success-message {
+      color: #22C55E;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 1.2rem;
+      display: none;
+    }
+    .error-message {
+      color: #f33;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 1.2rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="damage-form-container">
+    <div class="damage-form-title">Damage Assessment</div>
+    <form id="damageForm">
+      <div class="form-group">
+        <label for="rentalId">Rental ID</label>
+        <input type="text" id="rentalId" name="rentalId" required placeholder="YYMM-XXXX" readonly>
+      </div>
+      <div class="form-group">
+        <label for="damageType">Type of Damage</label>
+        <input type="text" id="damageType" placeholder="e.g. Scratch on door">
+      </div>
+      <div class="form-group">
+        <label for="damageAmount">Charge Amount ($)</label>
+        <input type="number" id="damageAmount" min="0" step="0.01" placeholder="e.g. 120">
+      </div>
+      <div class="form-group">
+        <label for="damageComment">Comment (optional)</label>
+        <textarea id="damageComment" placeholder="Extra details (optional)"></textarea>
+      </div>
+      <button type="button" class="add-btn" id="addDamageBtn">Add Item</button>
+      <ul class="damage-list" id="damageList"></ul>
+      <button type="submit" class="submit-btn">Submit Assessment</button>
+      <div class="success-message" id="successMsg">Damage assessment submitted!</div>
+      <div class="error-message" id="errorMsg"></div>
+    </form>
+  </div>
+  <script>
+    // Get rentalId from query param
+    function getQueryParams() {
+      const params = {};
+      window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(str, key, value) {
+        params[key] = decodeURIComponent(value);
+      });
+      return params;
+    }
+    const params = getQueryParams();
+    const rentalId = params.id || '';
+    document.getElementById('rentalId').value = rentalId;
+
+    // Damage items state
+    let damageItems = [];
+    function renderDamageList() {
+      const list = document.getElementById('damageList');
+      list.innerHTML = '';
+      damageItems.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'damage-item';
+        div.innerHTML = `<div class='item-header'><span>${item.type} - $${parseFloat(item.amount).toFixed(2)}</span><button type='button' class='remove-btn' data-idx='${idx}'>Remove</button></div>` +
+          (item.comment ? `<div class='item-comment'>${item.comment}</div>` : '');
+        list.appendChild(div);
+      });
+      // Remove logic
+      list.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.onclick = function() {
+          const idx = parseInt(btn.getAttribute('data-idx'), 10);
+          damageItems.splice(idx, 1);
+          renderDamageList();
+        };
+      });
+    }
+    document.getElementById('addDamageBtn').onclick = function() {
+      const type = document.getElementById('damageType').value.trim();
+      const amount = document.getElementById('damageAmount').value.trim();
+      const comment = document.getElementById('damageComment').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.style.display = 'none';
+      if (!type || !amount || isNaN(amount) || parseFloat(amount) <= 0) {
+        errorMsg.textContent = 'Please enter a valid damage type and amount.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+      damageItems.push({ type, amount: parseFloat(amount), comment });
+      document.getElementById('damageType').value = '';
+      document.getElementById('damageAmount').value = '';
+      document.getElementById('damageComment').value = '';
+      renderDamageList();
+    };
+    // Form submit
+    document.getElementById('damageForm').onsubmit = function(e) {
+      e.preventDefault();
+      const successMsg = document.getElementById('successMsg');
+      const errorMsg = document.getElementById('errorMsg');
+      successMsg.style.display = 'none';
+      errorMsg.style.display = 'none';
+      // Find reservation
+      let reservations = [];
+      try { reservations = JSON.parse(localStorage.getItem('azoom_reservations') || '[]'); } catch {}
+      const idx = reservations.findIndex(r => r.rentalId === rentalId);
+      if (idx === -1) {
+        errorMsg.textContent = 'Rental record not found.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+      // Save damage items to reservation
+      reservations[idx].damageItems = damageItems;
+      // Calculate total extra bill and set status
+      if (damageItems.length > 0) {
+        reservations[idx].extraBill = damageItems.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+        reservations[idx].extraNotes = '';
+        reservations[idx].status = 'Payment Awaiting';
+      } else {
+        reservations[idx].extraBill = 0;
+        reservations[idx].extraNotes = '';
+        reservations[idx].status = 'Completed';
+      }
+      localStorage.setItem('azoom_reservations', JSON.stringify(reservations));
+      successMsg.style.display = 'block';
+      setTimeout(() => { successMsg.style.display = 'none'; window.close(); }, 1800);
+    };
+    // If editing, load existing damage items
+    window.onload = function() {
+      let reservations = [];
+      try { reservations = JSON.parse(localStorage.getItem('azoom_reservations') || '[]'); } catch {}
+      const res = reservations.find(r => r.rentalId === rentalId);
+      if (res && Array.isArray(res.damageItems)) {
+        damageItems = res.damageItems;
+        renderDamageList();
+      }
+    };
+  </script>
+</body>
+</html>

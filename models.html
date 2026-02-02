@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Your Vehicle | AZoom Car Rental</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- No page-specific styles needed; all styles are now in styles.css -->
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">AZOOM</div>
+    <nav class="menu" id="hamburger-menu">
+      <a href="index.html#home">Home</a>
+      <a href="#" id="loginMenuBtn">Login</a>
+      <div id="userMenu" style="display:none;position:relative;">
+        <a href="#" id="userMenuBtn" style="color:var(--accent-color);font-weight:800;">User ▼</a>
+        <div id="userDropdown" style="display:none;position:absolute;top:2.2rem;right:0;background:#222;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.18);min-width:160px;z-index:3000;">
+          <a href="customer-dashboard.html" style="display:block;padding:0.8rem 1.2rem;color:var(--accent-color);text-decoration:none;font-weight:600;">Dashboard</a>
+          <a href="#" id="logoutBtn" style="display:block;padding:0.8rem 1.2rem;color:#f33;text-decoration:none;font-weight:600;">Logout</a>
+        </div>
+      </div>
+    </nav>
+    <button class="menu-toggle" id="hamburger">☰</button>
+  </header>
+  <main class="page">
+    <h2 class="models-title">Choose Your Vehicle</h2>
+    <div class="availability-legend" style="display:flex;gap:2.5rem;justify-content:center;align-items:center;margin-bottom:2.2rem;">
+      <span style="display:flex;align-items:center;gap:0.5rem;">
+        <span style="width:16px;height:16px;border-radius:50%;background:#22C55E;display:inline-block;border:2px solid #888;"></span>
+        <span style="color:var(--accent-color);font-size:1rem;border:1px solid #888;padding:2px 8px;border-radius:6px;background:rgba(34,197,94,0.07);">Available</span>
+      </span>
+      <span style="display:flex;align-items:center;gap:0.5rem;">
+        <span style="width:16px;height:16px;border-radius:50%;background:#f33;display:inline-block;border:2px solid #888;"></span>
+        <span style="color:#f33;font-size:1rem;border:1px solid #888;padding:2px 8px;border-radius:6px;background:rgba(243,51,51,0.07);">All Rented</span>
+      </span>
+      <span style="display:flex;align-items:center;gap:0.5rem;">
+        <span style="width:16px;height:16px;border-radius:50%;background:#181F2A;display:inline-block;border:2px solid #888;"></span>
+        <span style="color:#bbb;font-size:1rem;border:1px solid #888;padding:2px 8px;border-radius:6px;background:rgba(24,31,42,0.7);">Not Offered</span>
+      </span>
+    </div>
+    <section class="models-grid" id="modelsGrid">
+      <!-- Cards will be injected by JS -->
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="footer-content">
+      <h3>Follow Us</h3>
+      <div class="social-links">
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook">
+          <span>f</span>
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter">
+          <span>𝕏</span>
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram">
+          <span>📷</span>
+        </a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+          <span>in</span>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 AZOOM. All rights reserved.</p>
+    </div>
+  </footer>
+  <script>
+        // User menu dropdown logic (for consistency)
+        const userMenu = document.getElementById('userMenu');
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        if (userMenuBtn && userDropdown) {
+          userMenuBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+          });
+          document.addEventListener('click', (e) => {
+            if (!userMenu.contains(e.target) && e.target !== userMenuBtn) {
+              userDropdown.style.display = 'none';
+            }
+          });
+        }
+    // Hamburger menu logic (reuse from index.html)
+    const hamburger = document.getElementById("hamburger");
+    const menu = document.getElementById("hamburger-menu");
+    hamburger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menu.classList.toggle("active");
+    });
+    document.addEventListener("click", () => {
+      menu.classList.remove("active");
+    });
+
+    // Auth UI logic (reuse from index.html)
+    function updateAuthUI() {
+      const loggedIn = localStorage.getItem('azoom_logged_in') === 'true';
+      const userMenu = document.getElementById('userMenu');
+      const loginMenuBtn = document.getElementById('loginMenuBtn');
+      if (userMenu && loginMenuBtn) {
+        if (loggedIn) {
+          userMenu.style.display = 'inline-block';
+          loginMenuBtn.style.display = 'none';
+          const userMenuBtn = document.getElementById('userMenuBtn');
+          const user = localStorage.getItem('azoom_user') || 'User';
+          if (userMenuBtn) userMenuBtn.textContent = user + ' ▼';
+        } else {
+          userMenu.style.display = 'none';
+          loginMenuBtn.style.display = '';
+        }
+      }
+    }
+    updateAuthUI();
+    window.addEventListener('storage', updateAuthUI);
+
+    // Logout logic
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.removeItem('azoom_logged_in');
+        localStorage.removeItem('azoom_user');
+        updateAuthUI();
+        document.getElementById('userDropdown').style.display = 'none';
+      });
+    }
+
+    // All vehicle models and specs
+    // Store availability for each model
+    // Singapore context: Orchard Flagship (all vehicles), Changi Airport (no premium)
+    const allModels = [
+      {
+        category: "eco",
+        name: "Nissan Leaf",
+        img: "https://ev-database.org/img/auto/Nissan_Leaf_2022/Nissan_Leaf_2022-01.jpg",
+        specs: {
+          "Max Range": "370 km",
+          "Charging Time": "7-8 hrs",
+          "Seating": "5",
+          "Price/Day": "$45/day"
+        },
+        stores: { orchard: true, changi: true }
+      },
+      {
+        category: "eco",
+        name: "BYD Dolphin",
+        img: "https://ev-database.org/img/auto/BYD_DOLPHIN/BYD_DOLPHIN-01.jpg",
+        specs: {
+          "Max Range": "483 km",
+          "Charging Time": "6-7 hrs",
+          "Seating": "5",
+          "Price/Day": "$48/day"
+        },
+        stores: { orchard: true, changi: true }
+      },
+      {
+        category: "eco",
+        name: "Tesla Model 3",
+        img: "https://ev-database.org/img/auto/Tesla_Model_3_2021/Tesla_Model_3_2021-01.jpg",
+        specs: {
+          "Max Range": "576 km",
+          "Charging Time": "5-6 hrs",
+          "Seating": "5",
+          "Price/Day": "$58/day"
+        },
+        stores: { orchard: false, changi: false } // All rented
+      },
+      {
+        category: "family",
+        name: "Tesla Model Y",
+        img: "https://ev-database.org/img/auto/Tesla_Model_Y_2025/Tesla_Model_Y_2025-01.jpg",
+        specs: {
+          "Max Range": "531 km",
+          "Charging Time": "8-10 hrs",
+          "Seating": "7",
+          "Price/Day": "$85/day"
+        },
+        stores: { orchard: true, changi: true }
+      },
+      {
+        category: "family",
+        name: "Hyundai Ioniq 5",
+        img: "https://ev-database.org/img/auto/Hyundai_IONIQ5_2024/Hyundai_IONIQ5_2024-01.jpg",
+        specs: {
+          "Max Range": "488 km",
+          "Charging Time": "18 min (10-80%)",
+          "Seating": "5",
+          "Price/Day": "$80/day"
+        },
+        stores: { orchard: true, changi: true }
+      },
+      {
+        category: "family",
+        name: "Kia EV6",
+        img: "https://ev-database.org/img/auto/Kia_EV6_2021/Kia_EV6_2021-01.jpg",
+        specs: {
+          "Max Range": "499 km",
+          "Charging Time": "18 min (10-80%)",
+          "Seating": "5",
+          "Price/Day": "$78/day"
+        },
+        stores: { orchard: true, changi: true }
+      },
+      {
+        category: "premium",
+        name: "BMW i4",
+        img: "https://ev-database.org/img/auto/BMW_i4_2024/BMW_i4_2024-01.jpg",
+        specs: {
+          "Max Range": "484 km",
+          "Charging Time": "10-11 hrs",
+          "Seating": "5",
+          "Price/Day": "$125/day"
+        },
+        stores: { orchard: true, changi: false }
+      },
+      {
+        category: "premium",
+        name: "Mercedes EQE",
+        img: "https://ev-database.org/img/auto/Mercedes_EQE/Mercedes_EQE-01.jpg",
+        specs: {
+          "Max Range": "729 km",
+          "Charging Time": "11 hrs",
+          "Seating": "5",
+          "Price/Day": "$155/day"
+        },
+        stores: { orchard: true, changi: false }
+      },
+      {
+        category: "premium",
+        name: "Tesla Model S",
+        img: "https://ev-database.org/img/auto/Tesla_Model_S_2016/Tesla_Model_S_2016-01.jpg",
+        specs: {
+          "Max Range": "652 km",
+          "Charging Time": "12 hrs",
+          "Seating": "5",
+          "Price/Day": "$180/day"
+        },
+        stores: { orchard: true, changi: false }
+      }
+    ];
+
+    // Render cards
+    const grid = document.getElementById('modelsGrid');
+    allModels.forEach((model, idx) => {
+      const card = document.createElement('div');
+      // Card color logic: red border/shadow if all rented, else default
+      let allRented = model.stores.orchard === false && model.stores.changi === false;
+      card.className = 'model-card';
+      if (allRented) {
+        card.style.borderColor = '#f33';
+        card.style.boxShadow = 'none';
+      }
+      card.innerHTML = `
+        <img src="${model.img}" alt="${model.name}" loading="lazy">
+        <h3 style="${allRented ? 'text-shadow:none;color:#f33;' : ''}">${model.name}</h3>
+        <div class="model-specs">
+          <ul>
+            <li><span class="spec-label">Max Range:</span> <span>${model.specs["Max Range"]}</span></li>
+            <li><span class="spec-label">Charging Time:</span> <span>${model.specs["Charging Time"]}</span></li>
+            <li><span class="spec-label">Seating:</span> <span>${model.specs["Seating"]}</span></li>
+            <li><span class="spec-label">Price/Day:</span> <span>${model.specs["Price/Day"]}</span></li>
+          </ul>
+        </div>
+        <div style="display:flex; gap:1.2rem; justify-content:center; margin-bottom:1rem;">
+          <span title="Orchard Flagship" style="display:flex;align-items:center;gap:0.4rem;">
+            <span style="width:16px;height:16px;border-radius:50%;background:${model.stores.orchard === true ? '#22C55E' : (model.stores.orchard === false ? '#f33' : '#181F2A')};display:inline-block;border:2px solid #888;"></span>
+            <span style="font-size:0.95rem;color:var(--accent-color);">Orchard</span>
+          </span>
+          <span title="Changi Airport" style="display:flex;align-items:center;gap:0.4rem;">
+            <span style="width:16px;height:16px;border-radius:50%;background:${typeof model.stores.changi === 'boolean' ? (model.stores.changi ? '#22C55E' : (model.category === 'premium' ? '#181F2A' : '#f33')) : '#181F2A'};display:inline-block;border:2px solid #888;"></span>
+            <span style="font-size:0.95rem;color:var(--accent-color);">Changi</span>
+          </span>
+        </div>
+        <button class="rent-btn" data-model="${model.name}" data-category="${model.category}" data-orchard="${model.stores.orchard}" data-changi="${model.stores.changi}" data-price="${model.specs["Price/Day"]}" ${allRented ? 'disabled style="background:#f33;color:#fff;opacity:0.7;cursor:not-allowed;"' : ''}>${allRented ? 'Unavailable' : 'Rent'}</button>
+      `;
+      grid.appendChild(card);
+    });
+
+    // Rent button logic: go to rent.html with preselected model and store availability
+    grid.addEventListener('click', function(e) {
+      if (e.target.classList.contains('rent-btn')) {
+        const model = encodeURIComponent(e.target.getAttribute('data-model'));
+        const category = encodeURIComponent(e.target.getAttribute('data-category'));
+        const orchard = e.target.getAttribute('data-orchard');
+        const changi = e.target.getAttribute('data-changi');
+        const price = encodeURIComponent(e.target.getAttribute('data-price'));
+        window.location.href = `rent.html?model=${model}&category=${category}&orchard=${orchard}&changi=${changi}&price=${price}`;
+      }
+    });
+  </script>
+</body>
+</html>

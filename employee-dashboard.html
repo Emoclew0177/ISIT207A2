@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Dashboard | AZoom Car Rental</title>
+  <style>
+    body { background: #fff; color: #111; font-family: Arial, sans-serif; margin: 0; }
+    header { background: #111; color: #fff; padding: 1rem 2rem; }
+    h1 { margin: 0; font-size: 2rem; }
+    .container { max-width: 900px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+    .reservation-card {
+      border: 2px solid #22C55E;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      padding: 1.2rem 1.5rem;
+      background: #fafafa;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+    .reservation-card .actions { margin-top: 1rem; }
+    .reservation-card button {
+      margin-right: 1rem;
+      padding: 0.5rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #22C55E;
+      color: #fff;
+      transition: background 0.2s;
+    }
+    .reservation-card button:hover {
+      background: #111;
+      color: #fff;
+    }
+    .delete-btn {
+      background: #fff;
+      color: #f33;
+      border: 1px solid #f33;
+      margin-left: 0.5rem;
+    }
+    .delete-btn:hover { background: #f33; color: #fff; }
+    .release-btn { background: #22C55E; color: #fff; }
+    .return-btn { background: #fff; color: #22C55E; border: 1px solid #22C55E; }
+    .status { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <h1 style="margin:0;">Employee Dashboard</h1>
+      <button id="logoutBtn" style="background:#fff;color:#111;border:1px solid #111;padding:0.5rem 1.2rem;border-radius:4px;cursor:pointer;font-size:1rem;">Logout</button>
+    </div>
+  </header>
+  <div class="container">
+    <h2>Customer Reservations</h2>
+    <div id="reservationsList"></div>
+  </div>
+  <script>
+    // Simple logout
+    document.getElementById('logoutBtn').onclick = function() {
+      localStorage.removeItem('azoom_logged_in');
+      localStorage.removeItem('azoom_user');
+      window.location.href = 'index.html';
+    };
+    // Load and render all reservations
+    function renderReservations() {
+      let reservations = [];
+      try { reservations = JSON.parse(localStorage.getItem('azoom_reservations') || '[]'); } catch {}
+      const list = document.getElementById('reservationsList');
+      list.innerHTML = '';
+      if (reservations.length === 0) {
+        list.innerHTML = '<p>No reservations found.</p>';
+        return;
+      }
+      reservations.forEach((res, idx) => {
+        const card = document.createElement('div');
+        card.className = 'reservation-card';
+        // Format duration string
+        let durationStr = '';
+        if (res.period === 'daily') {
+          durationStr = `${res.duration} day${res.duration == 1 ? '' : 's'}`;
+        } else if (res.period === 'weekly') {
+          durationStr = `${res.duration} week${res.duration == 1 ? '' : 's'}`;
+        } else if (res.period === 'monthly') {
+          durationStr = `${res.duration} month${res.duration == 1 ? '' : 's'}`;
+        } else {
+          durationStr = `${res.duration} ${res.period}`;
+        }
+        // Add rental ID to card
+        let rentalIdHtml = res.rentalId ? `<div><b>Rental ID:</b> <span>${res.rentalId}</span></div>` : '';
+        // Extra bill/damage info
+        let extraHtml = '';
+        if (res.extraBill && res.extraBill > 0) {
+          extraHtml = `<div><b>Extra Bill:</b> $${res.extraBill} <br><b>Notes:</b> ${res.extraNotes || ''}</div>`;
+        } else if (res.extraNotes) {
+          extraHtml = `<div><b>Notes:</b> ${res.extraNotes}</div>`;
+        }
+        card.innerHTML =
+          rentalIdHtml +
+          `<div><b>Customer:</b> ${res.user}</div>` +
+          `<div><b>Car:</b> ${res.model}</div>` +
+          `<div><b>Pickup:</b> ${res.store}</div>` +
+          `<div><b>Start Date:</b> ${res.startDate}</div>` +
+          `<div><b>Duration:</b> ${durationStr}</div>` +
+          `<div><b>Status:</b> <span class="status">${res.status}</span></div>` +
+          extraHtml;
+        // Actions
+        const actions = document.createElement('div');
+        actions.className = 'actions';
+        // Step 2: Mark deposit paid & car collected
+        if (res.status === 'Reserved') {
+          const collectBtn = document.createElement('button');
+          collectBtn.className = 'release-btn';
+          collectBtn.textContent = 'Mark Deposit Paid & Collected';
+          collectBtn.onclick = function() {
+            reservations[idx].status = 'Collected';
+            localStorage.setItem('azoom_reservations', JSON.stringify(reservations));
+            renderReservations();
+          };
+          actions.appendChild(collectBtn);
+        }
+        // Step 3: Release car (after collection)
+        if (res.status === 'Collected') {
+          const releaseBtn = document.createElement('button');
+          releaseBtn.className = 'release-btn';
+          releaseBtn.textContent = 'Release Car';
+          releaseBtn.onclick = function() {
+            reservations[idx].status = 'Released';
+            localStorage.setItem('azoom_reservations', JSON.stringify(reservations));
+            renderReservations();
+          };
+          actions.appendChild(releaseBtn);
+        }
+        // Step 5: Check for damages (after return)
+        if (res.status === 'Released') {
+          const damageBtn = document.createElement('button');
+          damageBtn.className = 'release-btn';
+          damageBtn.textContent = 'Assess Damages';
+          damageBtn.onclick = function() {
+            window.open('damage-assessment.html?id=' + encodeURIComponent(res.rentalId), '_blank', 'width=600,height=700');
+          };
+          actions.appendChild(damageBtn);
+          // If damage items already exist, allow to proceed to payment
+          if (Array.isArray(res.damageItems) && res.damageItems.length > 0) {
+            const markPaidBtn = document.createElement('button');
+            markPaidBtn.className = 'release-btn';
+            markPaidBtn.textContent = 'Mark Damages Paid';
+            markPaidBtn.onclick = function() {
+              if (confirm('Mark all damages as paid and close rental?')) {
+                let reservations = [];
+                try { reservations = JSON.parse(localStorage.getItem('azoom_reservations') || '[]'); } catch {}
+                reservations[idx].status = 'Completed';
+                localStorage.setItem('azoom_reservations', JSON.stringify(reservations));
+                renderReservations();
+              }
+            };
+            actions.appendChild(markPaidBtn);
+          } else {
+            // If no damages, allow to close rental
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'release-btn';
+            closeBtn.textContent = 'No Damages, Close Rental';
+            closeBtn.onclick = function() {
+              if (confirm('Close rental as no damages?')) {
+                let reservations = [];
+                try { reservations = JSON.parse(localStorage.getItem('azoom_reservations') || '[]'); } catch {}
+                reservations[idx].status = 'Completed';
+                reservations[idx].extraBill = 0;
+                reservations[idx].damageItems = [];
+                localStorage.setItem('azoom_reservations', JSON.stringify(reservations));
+                renderReservations();
+              }
+            };
+            actions.appendChild(closeBtn);
+          }
+        }
+        // Step 6: Mark damages paid (if any)
+        if (res.status === 'Awaiting Payment' && res.extraBill && res.extraBill > 0) {
+          const paidBtn = document.createElement('button');
+          paidBtn.className = 'release-btn';
+          paidBtn.textContent = 'Mark Damages Paid';
+          paidBtn.onclick = function() {
+            reservations[idx].status = 'Completed';
+            localStorage.setItem('azoom_reservations', JSON.stringify(reservations));
+            renderReservations();
+          };
+          actions.appendChild(paidBtn);
+        }
+        // Step 7: View receipt (only if completed)
+        if (res.status === 'Completed') {
+          const receiptBtn = document.createElement('button');
+          receiptBtn.className = 'return-btn';
+          receiptBtn.textContent = 'View Receipt';
+          receiptBtn.onclick = function() {
+            window.open('receipt.html?id=' + encodeURIComponent(res.rentalId), '_blank');
+          };
+          actions.appendChild(receiptBtn);
+        }
+        // Delete record
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = 'Delete Record';
+        deleteBtn.onclick = function() {
+          if (confirm('Are you sure you want to delete this reservation?')) {
+            reservations.splice(idx, 1);
+            localStorage.setItem('azoom_reservations', JSON.stringify(reservations));
+            renderReservations();
+          }
+        };
+        actions.appendChild(deleteBtn);
+        card.appendChild(actions);
+        list.appendChild(card);
+      });
+
+      // Receipt modal logic
+      function showReceipt(res) {
+        let html = `<div style='font-size:1.1rem;line-height:1.7;'>`;
+        html += `<h2>Rental Receipt</h2>`;
+        html += `<b>Rental ID:</b> ${res.rentalId || ''}<br>`;
+        html += `<b>Customer:</b> ${res.user}<br>`;
+        html += `<b>Car:</b> ${res.model}<br>`;
+        html += `<b>Pickup:</b> ${res.store}<br>`;
+        html += `<b>Start Date:</b> ${res.startDate}<br>`;
+        html += `<b>Duration:</b> ${res.duration} ${res.period}<br>`;
+        html += `<b>Status:</b> ${res.status}<br>`;
+        html += `<b>Base Cost:</b> ${res.cost || ''}<br>`;
+        if (res.extraBill && res.extraBill > 0) {
+          html += `<b>Extra Bill:</b> $${res.extraBill}<br>`;
+        }
+        if (res.extraNotes) {
+          html += `<b>Notes:</b> ${res.extraNotes}<br>`;
+        }
+        html += `<b>Created:</b> ${res.created ? new Date(res.created).toLocaleString() : ''}<br>`;
+        html += `</div>`;
+        // Print and close
+        html += `<div style='margin-top:1.5rem;'><button onclick='window.print()' style='margin-right:1rem;'>Print</button><button onclick='document.body.removeChild(document.getElementById("receiptModal"))'>Close</button></div>`;
+        let modal = document.createElement('div');
+        modal.id = 'receiptModal';
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100vw';
+        modal.style.height = '100vh';
+        modal.style.background = 'rgba(0,0,0,0.4)';
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+        modal.style.zIndex = '9999';
+        let inner = document.createElement('div');
+        inner.style.background = '#fff';
+        inner.style.padding = '2rem 2.5rem';
+        inner.style.borderRadius = '12px';
+        inner.style.boxShadow = '0 4px 32px rgba(0,0,0,0.18)';
+        inner.innerHTML = html;
+        modal.appendChild(inner);
+        modal.addEventListener('click', function(e) {
+          if (e.target === modal) document.body.removeChild(modal);
+        });
+        document.body.appendChild(modal);
+      }
+    }
+    renderReservations();
+    window.addEventListener('storage', renderReservations);
+  </script>
+</body>
+</html>

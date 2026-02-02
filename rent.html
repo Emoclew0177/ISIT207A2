@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rent a Vehicle | AZoom Car Rental</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- No page-specific styles needed; all styles are now in styles.css -->
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">AZOOM</div>
+    <nav class="menu" id="hamburger-menu">
+      <a href="index.html#home">Home</a>
+      <a href="#" id="loginMenuBtn">Login</a>
+      <div id="userMenu" style="display:none;position:relative;">
+        <a href="#" id="userMenuBtn" style="color:var(--accent-color);font-weight:800;">User ▼</a>
+        <div id="userDropdown" style="display:none;position:absolute;top:2.2rem;right:0;background:#222;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.18);min-width:160px;z-index:3000;">
+          <a href="customer-dashboard.html" style="display:block;padding:0.8rem 1.2rem;color:var(--accent-color);text-decoration:none;font-weight:600;">Dashboard</a>
+          <a href="#" id="logoutBtn" style="display:block;padding:0.8rem 1.2rem;color:#f33;text-decoration:none;font-weight:600;">Logout</a>
+        </div>
+      </div>
+    </nav>
+    <button class="menu-toggle" id="hamburger">☰</button>
+  </header>
+
+  <main class="page">
+    <section class="rent-form-container">
+      <form class="rent-form" id="rentForm">
+        <h2>Rent a Vehicle</h2>
+        <div class="form-group">
+          <label for="model">Vehicle Model</label>
+          <input type="text" id="model" name="model" readonly required>
+        </div>
+        <div class="form-group">
+          <label for="store">Pickup Store</label>
+          <select id="store" name="store" required>
+            <option value="">Select store</option>
+            <option value="orchard">Orchard Flagship</option>
+            <option value="changi">Changi Airport</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="start-date">Start Date</label>
+          <input type="date" id="start-date" name="start-date" required>
+        </div>
+        <div class="form-group" style="display:flex;gap:1.5rem;align-items:flex-end;">
+          <div style="flex:1;">
+            <label for="duration">Duration</label>
+            <input type="number" id="duration" name="duration" min="1" max="30" required placeholder="Enter duration">
+          </div>
+          <div style="flex:1;">
+            <label for="period-type">Rental Period</label>
+            <select id="period-type" name="period-type" required>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="display: flex; flex-direction: column; align-items: stretch; gap: 0.5rem;">
+          <label class="estimated-cost-label" for="rentalCost">Estimated Rental Cost</label>
+          <div style="display: flex; align-items: stretch; justify-content: center; gap: 1rem; width: 100%;">
+            <input type="text" id="costBreakdown" name="costBreakdown" value="" readonly tabindex="-1" style="background:var(--bg-color);color:var(--text-color);border:1px solid var(--accent-color);text-align:right;flex:2;height:44px;display:flex;align-items:center;" />
+            <div style="display:flex;align-items:center;justify-content:center;height:44px;"><span style="font-size:1.5rem;font-weight:700;">=</span></div>
+            <input type="text" id="rentalCost" name="rentalCost" value="$0" readonly tabindex="-1" style="background:var(--bg-color);color:var(--text-color);border:1px solid var(--accent-color);text-align:right;flex:1;height:44px;display:flex;align-items:center;" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Credit Card Payment</label>
+          <input type="text" id="cc-name" name="cc-name" required placeholder="Name on Card" maxlength="40" autocomplete="cc-name" style="margin-bottom:0.7rem;">
+          <input type="text" id="cc-number" name="cc-number" required placeholder="Card Number (e.g. 1234 5678 9012 3456)" maxlength="19" inputmode="numeric" autocomplete="cc-number" style="margin-bottom:0.7rem;">
+          <div style="display:flex;gap:1rem;">
+            <input type="text" id="cc-exp" name="cc-exp" required placeholder="MM/YY (e.g. 08/29)" maxlength="5" autocomplete="cc-exp" style="flex:1;">
+            <input type="text" id="cc-cvc" name="cc-cvc" required placeholder="CVC (e.g. 123 or 1234)" maxlength="4" inputmode="numeric" autocomplete="cc-csc" style="flex:1;">
+          </div>
+        </div>
+        <button type="submit">Reserve & Pay</button>
+        <div class="success-message" id="successMessage" style="display:none;">Reservation and payment successful! Confirmation sent to your email.</div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <h3>Follow Us</h3>
+      <div class="social-links">
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook">
+          <span>f</span>
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter">
+          <span>𝕏</span>
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram">
+          <span>📷</span>
+        </a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+          <span>in</span>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 AZOOM. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+        // User menu dropdown logic (for consistency)
+        const userMenu = document.getElementById('userMenu');
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        if (userMenuBtn && userDropdown) {
+          userMenuBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+          });
+          document.addEventListener('click', (e) => {
+            if (!userMenu.contains(e.target) && e.target !== userMenuBtn) {
+              userDropdown.style.display = 'none';
+            }
+          });
+        }
+    // Hamburger menu logic (reuse from index.html)
+    const hamburger = document.getElementById("hamburger");
+    const menu = document.getElementById("hamburger-menu");
+    hamburger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menu.classList.toggle("active");
+    });
+    document.addEventListener("click", () => {
+      menu.classList.remove("active");
+    });
+
+    // Auth UI logic (reuse from index.html)
+    function updateAuthUI() {
+      const loggedIn = localStorage.getItem('azoom_logged_in') === 'true';
+      const userMenu = document.getElementById('userMenu');
+      const loginMenuBtn = document.getElementById('loginMenuBtn');
+      if (userMenu && loginMenuBtn) {
+        if (loggedIn) {
+          userMenu.style.display = 'inline-block';
+          loginMenuBtn.style.display = 'none';
+          const userMenuBtn = document.getElementById('userMenuBtn');
+          const user = localStorage.getItem('azoom_user') || 'User';
+          if (userMenuBtn) userMenuBtn.textContent = user + ' ▼';
+        } else {
+          userMenu.style.display = 'none';
+          loginMenuBtn.style.display = '';
+        }
+      }
+    }
+    updateAuthUI();
+    window.addEventListener('storage', updateAuthUI);
+
+    // Logout logic
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.removeItem('azoom_logged_in');
+        localStorage.removeItem('azoom_user');
+        updateAuthUI();
+        document.getElementById('userDropdown').style.display = 'none';
+      });
+    }
+
+    // Helper to get query params
+    function getQueryParams() {
+      const params = {};
+      window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(str, key, value) {
+        params[key] = decodeURIComponent(value);
+      });
+      return params;
+    }
+    
+    // Helper to generate a unique rental ID in YYMM-XXXX format
+    function generateRentalId() {
+      const now = new Date();
+      const yy = String(now.getFullYear()).slice(-2);
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const key = `azoom_rental_counter_${yy}${mm}`;
+      let counter = 1;
+      try {
+        counter = parseInt(localStorage.getItem(key) || '0', 10) + 1;
+      } catch {}
+      if (counter > 9999) counter = 1; // reset if over 9999
+      localStorage.setItem(key, counter);
+      const id = String(counter).padStart(4, '0');
+      return `${yy}${mm}-${id}`;
+    }
+
+    // Set min date to today
+    document.addEventListener('DOMContentLoaded', function() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('start-date').setAttribute('min', today);
+
+      // Pre-fill from query params if present
+      const params = getQueryParams();
+      // Lock model
+      if (params.model) {
+        document.getElementById('model').value = params.model;
+      }
+      // Disable unavailable stores
+      if (params.orchard === 'false') {
+        document.querySelector('#store option[value="orchard"]').disabled = true;
+      }
+      if (params.changi === 'false') {
+        document.querySelector('#store option[value="changi"]').disabled = true;
+      }
+      // If only one store is available, select it
+      if (params.orchard === 'true' && params.changi === 'false') {
+        document.getElementById('store').value = 'orchard';
+      } else if (params.orchard === 'false' && params.changi === 'true') {
+        document.getElementById('store').value = 'changi';
+      }
+      // Set price per day for cost calculation
+      let pricePerDay = 0;
+      if (params.price) {
+        // Extract number from $xx/day
+        const match = params.price.match(/\$(\d+)/);
+        if (match) pricePerDay = parseInt(match[1], 10);
+      }
+      // Rental cost calculation
+      const durationInput = document.getElementById('duration');
+      const periodType = document.getElementById('period-type');
+      const rentalCostDiv = document.getElementById('rentalCost');
+      function updateCost() {
+        let duration = parseInt(durationInput.value, 10) || 0;
+        let maxDuration = 365; // default max for daily
+        if (periodType.value === 'weekly') maxDuration = 52;
+        else if (periodType.value === 'monthly') maxDuration = 12;
+        if (duration > maxDuration) duration = maxDuration;
+        durationInput.value = duration; // clamp input value
+        let multiplier = 1;
+        let periodLabel = 'day';
+        if (periodType.value === 'weekly') { multiplier = 7; periodLabel = 'week'; }
+        else if (periodType.value === 'monthly') { multiplier = 30; periodLabel = 'month'; }
+        const totalDays = duration * multiplier;
+        const finalCost = duration > 0 ? totalDays * pricePerDay : 0;
+        rentalCostDiv.value = duration > 0 ? `$${finalCost}` : '$0';
+        // Breakdown: "$[rate] x [duration] [period]s (plural only if duration > 1)"
+        const modelRate = pricePerDay ? `$${pricePerDay}` : '$0';
+        const periodText = duration === 1 ? periodLabel : periodLabel + 's';
+        const breakdown = `${modelRate} x ${duration} ${periodText}`;
+        document.getElementById('costBreakdown').value = breakdown;
+      }
+      durationInput.addEventListener('input', updateCost);
+      periodType.addEventListener('change', updateCost);
+      updateCost();
+    });
+
+    // Form submission
+    document.getElementById('rentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Credit card validation with example formats
+      const ccNumber = document.getElementById('cc-number').value.trim();
+      const ccExp = document.getElementById('cc-exp').value.trim();
+      const ccCvc = document.getElementById('cc-cvc').value.trim();
+      // Card number: 16 digits, allow spaces
+      if (!/^\d{4} ?\d{4} ?\d{4} ?\d{4}$/.test(ccNumber)) {
+        alert('Please enter a valid card number. Example: 1234 5678 9012 3456');
+        document.getElementById('cc-number').focus();
+        return;
+      }
+      // Expiry: MM/YY
+      if (!/^\d{2}\/\d{2}$/.test(ccExp)) {
+        alert('Please enter a valid expiry date. Example: 08/29');
+        document.getElementById('cc-exp').focus();
+        return;
+      }
+      // CVC: 3 or 4 digits
+      if (!/^\d{3,4}$/.test(ccCvc)) {
+        alert('Please enter a valid CVC. Example: 123 or 1234');
+        document.getElementById('cc-cvc').focus();
+        return;
+      }
+      // Gather reservation data
+      const user = localStorage.getItem('azoom_user') || 'User';
+      const reservation = {
+        user,
+        model: document.getElementById('model').value,
+        store: document.getElementById('store').value,
+        startDate: document.getElementById('start-date').value,
+        duration: document.getElementById('duration').value,
+        period: document.getElementById('period-type').value,
+        cost: document.getElementById('rentalCost').value,
+        status: 'Reserved',
+        created: new Date().toISOString(),
+        rentalId: generateRentalId()
+      };
+      // Save to localStorage (per user)
+      let reservations = [];
+      try {
+        reservations = JSON.parse(localStorage.getItem('azoom_reservations') || '[]');
+      } catch {}
+      reservations.push(reservation);
+      localStorage.setItem('azoom_reservations', JSON.stringify(reservations));
+      document.getElementById('successMessage').style.display = 'block';
+      this.reset();
+      setTimeout(() => {
+        document.getElementById('successMessage').style.display = 'none';
+      }, 3500);
+    });
+  </script>
+</body>
+</html>

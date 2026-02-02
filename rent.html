@@ -226,6 +226,16 @@
       if (params.model) {
         document.getElementById('model').value = params.model;
       }
+      // Show category if present (new: Standard, Comfort, Luxury)
+      if (params.category) {
+        let cat = params.category;
+        if (["Standard","Comfort","Luxury"].includes(cat)) {
+          let catDiv = document.createElement('div');
+          catDiv.style = 'margin-bottom:0.7rem;font-size:1.08rem;color:var(--accent-color);font-weight:700;';
+          catDiv.textContent = `Category: ${cat}`;
+          document.getElementById('model').parentElement.appendChild(catDiv);
+        }
+      }
       // Disable unavailable stores
       if (params.orchard === 'false') {
         document.querySelector('#store option[value="orchard"]').disabled = true;

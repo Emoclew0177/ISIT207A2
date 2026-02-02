@@ -131,6 +131,10 @@
       html += `<b>Rental ID:</b> ${res.rentalId || ''}<br>`;
       html += `<b>Customer:</b> ${res.user}<br>`;
       html += `<b>Car:</b> ${res.model}<br>`;
+      // Show category if present (Standard, Comfort, Luxury)
+      if (["Standard","Comfort","Luxury"].includes(res.category)) {
+        html += `<b>Category:</b> ${res.category}<br>`;
+      }
       // Capitalize pickup location
       let loc = (res.store || '').toLowerCase();
       let locName = '';

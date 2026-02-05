@@ -859,7 +859,7 @@ body {
   color: var(--accent-color);
   user-select: none;
   font-family: 'Montserrat', 'Poppins', Arial, sans-serif;
-  cursor: pointer;
+  cursor: default;
 }
 
 .logo-text {
